@@ -25,6 +25,10 @@ export class LoginComponent implements OnInit {
   ngOnInit(): void {}
 
   getIn(val: {username: string, password: string}): void {
-    this.loginService.loginUser(val.username, val.password);
+    const loginResult = this.loginService.loginUser(val.username, val.password);
+    if (!loginResult) {
+      this.loginForm.reset();
+    }
   }
+
 }

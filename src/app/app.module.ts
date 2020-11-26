@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import {NgModule} from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -17,13 +17,21 @@ import {MatIconModule} from '@angular/material/icon';
 import {MatDividerModule} from '@angular/material/divider';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import { ToolbarComponent } from './components/toolbar/toolbar.component';
+import {MatTooltipModule} from '@angular/material/tooltip';
+import { FocusInvalidInputDirective } from './components/toolbar/focus-invalid-input.directive';
+import {MatMenuModule} from '@angular/material/menu';
+import {MatTableModule} from '@angular/material/table';
+import {MatPaginatorIntl, MatPaginatorModule} from '@angular/material/paginator';
+import {MatExpansionModule} from '@angular/material/expansion';
+import {Locales} from './helpers/locales';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
     HomeComponent,
-    ToolbarComponent
+    ToolbarComponent,
+    FocusInvalidInputDirective
   ],
   imports: [
     BrowserModule,
@@ -39,8 +47,13 @@ import { ToolbarComponent } from './components/toolbar/toolbar.component';
     MatIconModule,
     MatDividerModule,
     MatSnackBarModule,
+    MatTooltipModule,
+    MatMenuModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatExpansionModule,
   ],
-  providers: [AuthGuard],
+  providers: [AuthGuard, {provide: MatPaginatorIntl, useValue: Locales.paginatorPl()}],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule  {}

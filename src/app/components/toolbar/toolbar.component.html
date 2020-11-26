@@ -1,3 +1,16 @@
 <mat-toolbar color="primary" class="mat-elevation-z8 toolbar-ed">
-  <span>Internetowy system teleoperatorów</span>
+    <div fxLayout="col" fxFlex="5%">
+      <span>{{title}}</span>
+    </div>
+  <div fxLayout="col" *ngIf="loggedIn">
+    <button mat-button [matMenuTriggerFor]="menu">Adres</button>
+    <mat-menu #menu>
+      <button mat-menu-item [routerLink]="['/address/add-new']">
+        Dodaj nowy
+      </button>
+    </mat-menu>
+  </div>
+  <div *ngIf="loggedIn" fxLayout="col">
+    <button mat-icon-button matTooltip="Wyloguj" (click)="logout()"><mat-icon>meeting_room</mat-icon></button>
+  </div>
 </mat-toolbar>
