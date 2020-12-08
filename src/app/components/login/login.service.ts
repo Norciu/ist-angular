@@ -9,11 +9,7 @@ export class LoginService {
 
   constructor(private auth: AuthService, private router: Router) { }
 
-  loginUser(username: string, password: string): boolean {
-    const res = this.auth.login(username, password);
-    if (res) {
-      this.router.navigate(['/home']);
-      return res;
-    }
+  loginUser(username: string, password: string): void {
+    this.auth.login(username, password);
   }
 }

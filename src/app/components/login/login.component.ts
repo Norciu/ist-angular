@@ -26,9 +26,6 @@ export class LoginComponent implements OnInit {
 
   getIn(val: {username: string, password: string}): void {
     const loginResult = this.loginService.loginUser(val.username, val.password);
-    if (!loginResult) {
-      this.loginForm.reset();
-    }
   }
 
 }

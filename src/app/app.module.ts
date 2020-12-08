@@ -24,6 +24,7 @@ import {MatTableModule} from '@angular/material/table';
 import {MatPaginatorIntl, MatPaginatorModule} from '@angular/material/paginator';
 import {MatExpansionModule} from '@angular/material/expansion';
 import {Locales} from './helpers/locales';
+import {HttpClientModule} from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -52,6 +53,7 @@ import {Locales} from './helpers/locales';
     MatTableModule,
     MatPaginatorModule,
     MatExpansionModule,
+    HttpClientModule
   ],
   providers: [AuthGuard, {provide: MatPaginatorIntl, useValue: Locales.paginatorPl()}],
   bootstrap: [AppComponent]
