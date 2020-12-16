@@ -1,3 +1,4 @@
-#Welcome to IST
+# Welcome to IST!
 
-Don't have so much time for this README, will be sometime,
+On start, if you are looking for PL language version of this README, just look at [README_PL.md](README_PL.md);
+

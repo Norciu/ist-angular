@@ -1,4 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
+@import '~@swimlane/ngx-datatable/index.css';
+@import '~@swimlane/ngx-datatable/themes/material.scss';
+@import '~@swimlane/ngx-datatable/assets/icons.css';
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
@@ -12,4 +15,20 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   color:#155724;
   background-color:#d4edda;
   border-color:#c3e6cb
+}
+
+.aligned-with-icon-relative {
+  position: relative;
+  top: -5px;
+  margin-left: 5px;
+}
+
+.aligned-with-icon {
+  position: absolute;
+  margin-top: 5px;
+  margin-left: 5px;
+}
+
+.mat-icon {
+  vertical-align: center;
 }

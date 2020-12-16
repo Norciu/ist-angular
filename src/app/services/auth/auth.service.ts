@@ -1,69 +1,77 @@
 import { Injectable } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
-import {of, Subscription, throwError} from 'rxjs';
+import { Subject, Subscription, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { Router } from '@angular/router';
+import { Snacks } from '../../helpers/snacks';
+import { CookieService } from 'ngx-cookie-service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  private credentials: { username: string; password: string }[] = [
-    { username: 'norbert', password: 'qwerty' },
-    { username: 'test', password: '12345678' },
-  ];
-  constructor(private snack: MatSnackBar, private http: HttpClient) {}
+  loggedIn$: Subject<boolean> = new Subject<boolean>();
+  loggedIn: boolean;
 
-  // login(username: string, password: string): boolean {
-  //   for (const val of this.credentials) {
-  //     if (val.username === username && val.password === password) {
-  //       this.sessionStorage(username);
-  //       return true;
-  //     }
-  //   }
-  //   this.dangerInfo('Niepoprawne dane logowania');
-  //   return false;
-  // }
+  constructor(
+    private http: HttpClient,
+    private router: Router,
+    private snack: Snacks,
+    private cookie: CookieService
+  ) {}
+
   login(username: string, password: string): Subscription {
     return this.http
-      .post(environment.apiUrl + '/user/login', { username, password })
-      .pipe(catchError(err => {
-        if (err.status === 401) {
-          this.dangerInfo('Dane logowania są niepoprawne!');
+      .post(
+        environment.apiUrl + '/user/login',
+        { username, password },
+        { withCredentials: true }
+      )
+      .pipe(
+        catchError((err) => {
+          if (err.status === 401) {
+            this.snack.dangerInfo('Dane logowania są niepoprawne!');
+          } else {
+            this.snack.dangerInfo('Wystąpił nieoczekiwany błąd serwera!');
+          }
           return throwError(err);
+        })
+      )
+      .subscribe((val: { _csrf: string; _jwt: string }) => {
+        if (val._csrf && val._jwt) {
+          return this.setNewSession(val._csrf, val._jwt, username);
         }
-      } ))
-      .subscribe((val) => {
-        // TODO Wstawianie tokenów _csrf oraz _jwt bezpośrednio do Cookies
-        console.log(val);
-        return val;
       });
   }
 
   checkSession(): boolean {
-    return !!sessionStorage.getItem('username');
+    return (
+      this.cookie.check('_csrf') &&
+      this.cookie.check('_jwt') &&
+      this.cookie.check('_username')
+    );
   }
 
   logout(): void {
-    sessionStorage.removeItem('username');
+    this.cookie.deleteAll();
+    this.loggedIn$.next(false);
+    this.snack.successInfo('Pomyślnie wylogowano z systemu!');
   }
 
-  private sessionStorage(username: string): void {
-    sessionStorage.setItem('username', username);
+  private async setNewSession(
+    csrf: string,
+    jwt: string,
+    username: string
+  ): Promise<void> {
+    this.setCookies(csrf, jwt, username);
+    this.loggedIn$.next(true);
+    await this.router.navigate(['/home']);
   }
-
-  private dangerInfo(message: string): void {
-    this.snack.open(message, '', {
-      duration: 3000,
-      panelClass: 'danger-snackbar',
-    });
-  }
-
-  private successInfo(message: string): void {
-    this.snack.open(message, '', {
-      duration: 3000,
-      panelClass: '',
-    });
+  private setCookies(csrf: string, jwt: string, username: string): void {
+    const cookieOpts = { path: '/' };
+    this.cookie.set('_csrf', csrf, cookieOpts);
+    this.cookie.set('_jwt', jwt, cookieOpts);
+    this.cookie.set('_username', username, cookieOpts);
   }
 }

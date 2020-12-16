@@ -1,16 +1,26 @@
 <mat-toolbar color="primary" class="mat-elevation-z8 toolbar-ed">
-    <div fxLayout="col" fxFlex="5%">
-      <span>{{title}}</span>
-    </div>
-  <div fxLayout="col" *ngIf="loggedIn">
+  <div fxLayout="col" fxFlex="10%">
+    <span>{{title}}</span>
+    <button mat-icon-button matTooltip="Strona główna" *ngIf="loggedIn" [routerLink]="['/home']"><mat-icon>home</mat-icon></button>
+  </div>
+  <div fxLayout="col" fxFlex="85" *ngIf="loggedIn">
     <button mat-button [matMenuTriggerFor]="menu">Adres</button>
     <mat-menu #menu>
-      <button mat-menu-item [routerLink]="['/address/add-new']">
-        Dodaj nowy
+      <button mat-menu-item [routerLink]="['/city/add-new']">
+        Dodaj nową miejscowość
+      </button>
+      <button mat-menu-item [routerLink]="['/street/add-new']">
+        Dodaj nową ulicę
       </button>
     </mat-menu>
   </div>
+  <div fxLayout="col" fxFlex="10" *ngIf="loggedIn" matTooltip="Zalogowany jako">
+    <mat-icon>person</mat-icon>
+    <span class="mat-body-2">{{ loggedAs }}</span>
+  </div>
   <div *ngIf="loggedIn" fxLayout="col">
-    <button mat-icon-button matTooltip="Wyloguj" (click)="logout()"><mat-icon>meeting_room</mat-icon></button>
+    <button mat-icon-button matTooltip="Wyloguj" (click)="logout()">
+      <mat-icon>meeting_room</mat-icon>
+    </button>
   </div>
 </mat-toolbar>

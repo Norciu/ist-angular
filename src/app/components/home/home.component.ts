@@ -6,6 +6,9 @@ import {
   transition,
   trigger,
 } from '@angular/animations';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { environment } from '../../../environments/environment';
+import {CookieService} from 'ngx-cookie-service';
 
 export interface PeriodicElement {
   id: number;
@@ -43,30 +46,12 @@ const ELEMENT_DATA: PeriodicElement[] = [
   ],
 })
 export class HomeComponent implements OnInit {
-  dataSource = ELEMENT_DATA;
-  readonly columns = [
-    { name: '#', alias: 'id' },
-    { name: 'Miejscowość', alias: 'cityName' },
-    { name: 'Ulica', alias: 'streetName' },
-    { name: 'Numer porządkowy', alias: 'homeNo' },
-    { name: 'echnologia', alias: 'cityName' },
+  rows = [
+    { name: 'Austin', gender: 'Male', company: 'Swimlane' },
+    { name: 'Dany', gender: 'Male', company: 'KFC' },
+    { name: 'Molly', gender: 'Female', company: 'Burger King' }
   ];
-  readonly tableHeaderColumnsName = [
-    '#',
-    'Miejscowość',
-    'Ulica',
-    'Numer porządkowy',
-    'Technologia',
-  ];
-  readonly columnsToDisplay = [
-    'id',
-    'cityName',
-    'streetName',
-    'homeNo',
-    'technology',
-  ];
-  expandedElement: PeriodicElement | null;
-  constructor() {}
+  columns = [{ prop: 'name' }, { name: 'Gender' }, { name: 'Company' }]
 
   ngOnInit(): void {}
 }

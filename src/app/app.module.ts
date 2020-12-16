@@ -24,7 +24,11 @@ import {MatTableModule} from '@angular/material/table';
 import {MatPaginatorIntl, MatPaginatorModule} from '@angular/material/paginator';
 import {MatExpansionModule} from '@angular/material/expansion';
 import {Locales} from './helpers/locales';
-import {HttpClientModule} from '@angular/common/http';
+import {HttpClientModule, HttpClientXsrfModule} from '@angular/common/http';
+import {CookieService} from 'ngx-cookie-service';
+import {NgxDatatableModule} from '@swimlane/ngx-datatable';
+import { StreetComponent } from './components/street/street.component';
+import { CityComponent } from './components/city/city.component';
 
 @NgModule({
   declarations: [
@@ -32,7 +36,9 @@ import {HttpClientModule} from '@angular/common/http';
     LoginComponent,
     HomeComponent,
     ToolbarComponent,
-    FocusInvalidInputDirective
+    FocusInvalidInputDirective,
+    StreetComponent,
+    CityComponent,
   ],
   imports: [
     BrowserModule,
@@ -53,9 +59,15 @@ import {HttpClientModule} from '@angular/common/http';
     MatTableModule,
     MatPaginatorModule,
     MatExpansionModule,
-    HttpClientModule
+    HttpClientModule,
+    HttpClientXsrfModule.withOptions({ headerName: 'csrf-token' }),
+    NgxDatatableModule
   ],
-  providers: [AuthGuard, {provide: MatPaginatorIntl, useValue: Locales.paginatorPl()}],
-  bootstrap: [AppComponent]
+  providers: [
+    AuthGuard,
+    { provide: MatPaginatorIntl, useValue: Locales.paginatorPl() },
+    CookieService,
+  ],
+  bootstrap: [AppComponent],
 })
-export class AppModule  {}
+export class AppModule {}
