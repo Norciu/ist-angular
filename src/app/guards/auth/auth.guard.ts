@@ -6,7 +6,7 @@ import {
   UrlTree,
   Router,
 } from '@angular/router';
-import { Observable, Subscription } from 'rxjs';
+import { Observable } from 'rxjs';
 import { AuthService } from '../../services/auth/auth.service';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
@@ -40,13 +40,7 @@ export class AuthGuard implements CanActivate {
 
   public checkSession(): Promise<boolean> {
     return this.http
-      .get(environment.apiUrl + '/user/is-logged', {
-        headers: {
-          authorization: this.cookies.get('_jwt'),
-          'csrf-token': this.cookies.get('_csrf'),
-        },
-        withCredentials: true,
-      })
+      .get(environment.apiUrl + '/user/is-logged')
       .pipe(
         catchError((err) => {
           this.router.navigate(['/session/login']);

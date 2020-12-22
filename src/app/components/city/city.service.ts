@@ -8,7 +8,8 @@ import {Observable} from 'rxjs';
   providedIn: 'root',
 })
 export class CityService {
-  constructor(private http: HttpClient, private cookies: CookieService) {}
+
+  constructor(private http: HttpClient) {}
 
   send(cityName: string, simc: string): Observable<any> {
     return this.http.put(
@@ -17,13 +18,10 @@ export class CityService {
         cityName,
         simc,
       },
-      {
-        headers: {
-          authorization: this.cookies.get('_jwt'),
-          'csrf-token': this.cookies.get('_csrf'),
-        },
-        withCredentials: true,
-      }
     );
+  }
+
+  getAll(): Observable<object> {
+    return this.http.get(environment.apiUrl + '/city/get-all');
   }
 }

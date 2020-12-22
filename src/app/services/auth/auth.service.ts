@@ -26,7 +26,6 @@ export class AuthService {
       .post(
         environment.apiUrl + '/user/login',
         { username, password },
-        { withCredentials: true }
       )
       .pipe(
         catchError((err) => {
@@ -38,16 +37,15 @@ export class AuthService {
           return throwError(err);
         })
       )
-      .subscribe((val: { _csrf: string; _jwt: string }) => {
-        if (val._csrf && val._jwt) {
-          return this.setNewSession(val._csrf, val._jwt, username);
+      .subscribe((val: { token: string }) => {
+        if (val.token) {
+          return this.setNewSession(val.token, username);
         }
       });
   }
 
   checkSession(): boolean {
     return (
-      this.cookie.check('_csrf') &&
       this.cookie.check('_jwt') &&
       this.cookie.check('_username')
     );
@@ -59,19 +57,8 @@ export class AuthService {
     this.snack.successInfo('Pomyślnie wylogowano z systemu!');
   }
 
-  private async setNewSession(
-    csrf: string,
-    jwt: string,
-    username: string
-  ): Promise<void> {
-    this.setCookies(csrf, jwt, username);
+  private async setNewSession(jwt: string, username: string): Promise<void> {
     this.loggedIn$.next(true);
     await this.router.navigate(['/home']);
-  }
-  private setCookies(csrf: string, jwt: string, username: string): void {
-    const cookieOpts = { path: '/' };
-    this.cookie.set('_csrf', csrf, cookieOpts);
-    this.cookie.set('_jwt', jwt, cookieOpts);
-    this.cookie.set('_username', username, cookieOpts);
   }
 }

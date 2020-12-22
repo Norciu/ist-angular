@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import {NgModule} from '@angular/core';
+import {LOCALE_ID, NgModule} from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -24,11 +24,20 @@ import {MatTableModule} from '@angular/material/table';
 import {MatPaginatorIntl, MatPaginatorModule} from '@angular/material/paginator';
 import {MatExpansionModule} from '@angular/material/expansion';
 import {Locales} from './helpers/locales';
-import {HttpClientModule, HttpClientXsrfModule} from '@angular/common/http';
+import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import {CookieService} from 'ngx-cookie-service';
 import {NgxDatatableModule} from '@swimlane/ngx-datatable';
 import { StreetComponent } from './components/street/street.component';
 import { CityComponent } from './components/city/city.component';
+import {AuthInterceptor} from './interceptors/auth.interceptor';
+import { CitiesTableComponent } from './components/city/cities-table/cities-table.component';
+import { registerLocaleData } from '@angular/common';
+import localePl from '@angular/common/locales/pl';
+import {MatSelectModule} from '@angular/material/select';
+import {MatAutocompleteModule} from '@angular/material/autocomplete';
+import { StreetsTableComponent } from './components/street/streets-table/streets-table.component';
+
+registerLocaleData(localePl, 'pl');
 
 @NgModule({
   declarations: [
@@ -39,6 +48,8 @@ import { CityComponent } from './components/city/city.component';
     FocusInvalidInputDirective,
     StreetComponent,
     CityComponent,
+    CitiesTableComponent,
+    StreetsTableComponent,
   ],
   imports: [
     BrowserModule,
@@ -60,13 +71,16 @@ import { CityComponent } from './components/city/city.component';
     MatPaginatorModule,
     MatExpansionModule,
     HttpClientModule,
-    HttpClientXsrfModule.withOptions({ headerName: 'csrf-token' }),
-    NgxDatatableModule
+    NgxDatatableModule,
+    MatSelectModule,
+    MatAutocompleteModule
   ],
   providers: [
+    {provide: LOCALE_ID, useValue: 'pl'},
     AuthGuard,
     { provide: MatPaginatorIntl, useValue: Locales.paginatorPl() },
     CookieService,
+    {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true}
   ],
   bootstrap: [AppComponent],
 })

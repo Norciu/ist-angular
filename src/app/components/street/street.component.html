@@ -1,0 +1,42 @@
+<div fxLayout="row" style="padding-bottom: 20px">
+  <div fxFlex="20"></div>
+  <mat-card style="margin-top: 20px" fxFlex="60">
+    <form [formGroup]="streetForm" (ngSubmit)="add()">
+      <mat-card-header>
+        <h1>Nowa ulica</h1>
+      </mat-card-header>
+      <mat-divider></mat-divider>
+      <mat-card-content>
+        <div fxLayout="row" fxLayoutAlign="center" style="padding-top: 20px;">
+          <mat-form-field appearance="outline" style="width: 60%">
+            <mat-label>Wybierz miejscowość</mat-label>
+            <input type="text" placeholder="Wybierz miejscowość" formControlName="city" matInput [matAutocomplete]="auto" required>
+            <mat-icon matSuffix matTooltip="Musisz wybrać miejscowość, aby dodać do niej ulicę.">info</mat-icon>
+            <mat-autocomplete #auto="matAutocomplete">
+              <mat-option *ngFor="let option of filteredCities | async" [value]="option.cityName" (onSelectionChange)="citySimc=option.simc">
+                <span>{{option.cityName}}</span> | <small>Kod SIMC: {{option.simc}}</small>
+              </mat-option>
+            </mat-autocomplete>
+            <mat-hint *ngIf="simc">Kod SIMC: {{simc}}</mat-hint>
+          </mat-form-field>
+        </div>
+        <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign="center">
+          <mat-form-field appearance="outline">
+            <mat-label>Nazwa ulicy</mat-label>
+            <input matInput id="streetName" formControlName="streetName" required autocomplete="off">
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Kod SIMC</mat-label>
+            <input id="simc" formControlName="ulic" matInput required autocomplete="off">
+          </mat-form-field>
+        </div>
+      </mat-card-content>
+      <mat-divider></mat-divider>
+      <mat-card-actions>
+        <button mat-raised-button color="primary" style="float: right" type="submit">Dodaj</button>
+      </mat-card-actions>
+    </form>
+  </mat-card>
+  <div fxFlex="20"></div>
+</div>
+<app-streets-table></app-streets-table>
