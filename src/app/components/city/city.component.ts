@@ -4,7 +4,6 @@ import { CityService } from './city.service';
 import { catchError } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { Snacks } from '../../helpers/snacks';
-import {CityDatabase} from '../../interfaces/city.interface';
 
 @Component({
   selector: 'app-city',
@@ -14,9 +13,12 @@ import {CityDatabase} from '../../interfaces/city.interface';
 export class CityComponent implements OnInit {
   cityForm = this.fb.group({
     cityName: this.fb.control('', [Validators.required]),
+    postalCode: this.fb.control('', [
+      Validators.required,
+      Validators.pattern(/[0-9]{2}-[0-9]{3}/),
+    ]),
     simc: this.fb.control('', [Validators.required]),
   });
-
 
   constructor(
     private fb: FormBuilder,
@@ -32,6 +34,7 @@ export class CityComponent implements OnInit {
       this.cityService
         .send(
           this.cityForm.get('cityName').value,
+          this.cityForm.get('postalCode').value,
           this.cityForm.get('simc').value
         )
         .pipe(
@@ -40,12 +43,11 @@ export class CityComponent implements OnInit {
           })
         )
         .subscribe((val) => {
-          console.log(val)
-          if (val.status === 'Added'){
+          if (val.status === 'Added') {
             this.router.navigate(['/city/add-new']);
-            this.snacks.successInfo('Ulica została pomyślnie dodana!');
+            this.snacks.successInfo('Miejscowość została pomyślnie dodana!');
           } else {
-            this.snacks.dangerInfo('Taka ulica już istnieje!');
+            this.snacks.dangerInfo('Taka miejscowość już istnieje!');
           }
         });
     }
@@ -54,5 +56,4 @@ export class CityComponent implements OnInit {
   private validateForm(): boolean {
     return this.cityForm.valid;
   }
-
 }

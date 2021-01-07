@@ -1,0 +1,214 @@
+<mat-vertical-stepper [linear]="true" #stepper>
+  <mat-step [stepControl]="clientInfo">
+    <form [formGroup]="clientInfo">
+      <ng-template matStepLabel
+        >Uzupełnij dane klienta
+        <mat-icon
+          matTooltip="Pomiń ten punkt, jeżeli nie posiadasz danych klienta"
+          >info</mat-icon
+        ></ng-template
+      >
+      <mat-form-field appearance="outline" class="client-type-select">
+        <mat-label>Wybierz typ klienta</mat-label>
+        <mat-select
+          placeholder="Typ klienta"
+          formControlName="clientType"
+          #clientType
+        >
+          <mat-option>---</mat-option>
+          <mat-option value="1">Osoba fizyczna</mat-option>
+          <mat-option value="2">Firma</mat-option>
+        </mat-select>
+        <mat-hint>Kliknij dalej, jeżeli nie posiadasz danych klienta</mat-hint>
+      </mat-form-field>
+      <div *ngIf="clientType.value === '1'">
+        <div fxLayout="row" fxLayoutGap="10px">
+          <mat-form-field appearance="outline">
+            <input matInput placeholder="Imię" formControlName="firstName" />
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <input matInput placeholder="Nazwisko" formControlName="lastName" />
+          </mat-form-field>
+        </div>
+      </div>
+      <div *ngIf="clientType.value === '2'">
+        <div fxLayout="row" fxLayoutGap="15px">
+          <mat-form-field appearance="outline" fxFlex="30">
+            <input
+              matInput
+              placeholder="Nazwa firmy"
+              formControlName="companyName"
+            />
+          </mat-form-field>
+          <div fxLayout="row" fxLayoutGap="10px">
+            <mat-form-field appearance="outline">
+              <input
+                matInput
+                placeholder="Imię osoby kontaktowej"
+                formControlName="firstName"
+              />
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <input
+                matInput
+                placeholder="Nazwisko osoby kontaktowej"
+                formControlName="lastName"
+              />
+            </mat-form-field>
+          </div>
+        </div>
+      </div>
+      <div
+        fxLayout="row"
+        fxLayoutGap="10px"
+        *ngIf="clientType.value === '1' || clientType.value === '2'"
+      >
+        <mat-form-field appearance="outline">
+          <mat-label>Numer telefonu</mat-label>
+          <input
+            matInput
+            placeholder="Numer telefonu"
+            formControlName="phoneNo"
+          />
+          <mat-icon matSuffix>phone</mat-icon>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Email</mat-label>
+          <input
+            matInput
+            type="email"
+            placeholder="Email"
+            formControlName="email"
+          />
+          <mat-icon matSuffix>email</mat-icon>
+        </mat-form-field>
+      </div>
+      <div>
+        <button
+          mat-raised-button
+          color="primary"
+          class="btn-margin"
+          matStepperNext
+        >
+          Dalej
+        </button>
+      </div>
+    </form>
+  </mat-step>
+  <mat-step [stepControl]="addressForm">
+    <form [formGroup]="addressForm">
+      <ng-template matStepLabel>Uzupełnij adres przyłącza</ng-template>
+      <div fxLayout="row" fxLayoutGap="10px">
+        <mat-form-field appearance="outline" fxFlex="30">
+          <mat-label>Wybierz miejscowość</mat-label>
+          <input
+            type="text"
+            placeholder="Miejscowość"
+            formControlName="city"
+            matInput
+            [matAutocomplete]="auto"
+            required
+          />
+          <mat-autocomplete #auto="matAutocomplete">
+            <mat-option
+              *ngFor="let option of filteredCities | async"
+              [value]="option.cityName"
+              (onSelectionChange)="findStreetsForCity(option.simc); simc=option.simc"
+            >
+              <span>{{ option.cityName }}</span> |
+              <small>Kod SIMC: {{ option.simc }}</small>
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+        <mat-form-field appearance="outline" fxFlex="30">
+          <mat-label>Wybierz ulicę</mat-label>
+          <input
+            type="text"
+            placeholder="Ulica"
+            formControlName="street"
+            matInput
+            [matAutocomplete]="auto2"
+            required
+          />
+          <mat-autocomplete #auto2="matAutocomplete">
+            <mat-option
+              *ngFor="let opt of filteredStreets | async"
+              [value]="opt.streetName"
+              (onSelectionChange)="ulic=opt.ulic"
+            >
+              <span>{{ opt.streetName }}</span> |
+              <small>Kod ULIC: {{ opt.ulic }}</small>
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+      </div>
+      <div fxLayout="row" fxLayoutGap="10px">
+        <mat-form-field appearance="outline">
+          <mat-label>Numer bloku</mat-label>
+          <input matInput type="text" formControlName="flatNo" />
+        </mat-form-field>
+        <mat-form-field appearance="outline" fxFlex="15">
+          <mat-label>Numer budynku / mieszkania</mat-label>
+          <input matInput type="text" formControlName="homeNo" required />
+        </mat-form-field>
+        <mat-form-field appearance="outline" fxFlex="15">
+          <mat-label>Numer działki</mat-label>
+          <input matInput type="text" formControlName="plotNo" />
+          <mat-icon
+            matSuffix
+            matTooltip="Podaj w przypadku, kiedy budynek nie został jeszcze do użytku publicznego"
+            >info</mat-icon
+          >
+        </mat-form-field>
+      </div>
+      <div fxLayoutGap="10px">
+        <button mat-raised-button matStepperPrevious>Wstecz</button>
+        <button mat-raised-button color="primary" matStepperNext>Dalej</button>
+      </div>
+    </form>
+  </mat-step>
+  <mat-step [stepControl]="technologyForm">
+    <form [formGroup]="technologyForm">
+      <ng-template matStepLabel>Wybierz technologię</ng-template>
+      <p>
+        Wybierz najlepszą możliwą technologię do przyłączenia do infrastruktury
+      </p>
+      <div>
+        <mat-form-field appearance="outline" fxFlex="30">
+          <mat-label>Wybierz technologie</mat-label>
+          <input
+            type="text"
+            placeholder="Technologia"
+            formControlName="techForm"
+            matInput
+            [matAutocomplete]="auto3"
+            required
+          />
+          <mat-autocomplete #auto3="matAutocomplete">
+            <mat-option
+              *ngFor="let option of filteredTechnologies | async"
+              [value]="option.technologyName"
+            >
+              <span>{{ option.technologyName }}</span>
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+      </div>
+
+      <div fxLayoutGap="10px">
+        <button mat-raised-button matStepperPrevious>Wstecz</button>
+        <button mat-raised-button matStepperNext color="primary">Dalej</button>
+      </div>
+    </form>
+  </mat-step>
+  <mat-step>
+    <ng-template matStepLabel>Dodaj lokalizację</ng-template>
+    <p>Jeśli wprowadzone dane są poprawne, kliknij przycisk "Dodaj"</p>
+    <div fxLayoutGap="20px">
+      <button mat-raised-button (click)="stepper.reset()">Resetuj</button>
+      <button mat-raised-button color="primary" (click)="add()">
+        <strong>Dodaj</strong>
+      </button>
+    </div>
+  </mat-step>
+</mat-vertical-stepper>

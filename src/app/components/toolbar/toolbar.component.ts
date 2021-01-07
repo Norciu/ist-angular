@@ -1,9 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { Router } from '@angular/router';
+import { NavigationEnd, Router, RouterEvent } from '@angular/router';
 import { AuthService } from '../../services/auth/auth.service';
 import { CookieService } from 'ngx-cookie-service';
-import {AuthGuard} from '../../guards/auth/auth.guard';
+import { AuthGuard } from '../../guards/auth/auth.guard';
+import { filter, map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-toolbar',
@@ -15,24 +16,25 @@ export class ToolbarComponent implements OnInit, OnDestroy {
   loggedIn$: Subscription;
   loggedIn: boolean = this.authService.checkSession();
   loggedAs: string;
+  route: Subscription;
   constructor(
     private router: Router,
     private authService: AuthService,
-    private cookie: CookieService,
-    private authGuard: AuthGuard
+    private cookie: CookieService
   ) {}
 
   ngOnInit(): void {
-    this.loggedIn
-      ? this.changeToolbarForLoggedIn()
-      : this.changeToolbarForNotLoggedIn();
-    this.loggedIn$ = this.authService.loggedIn$
-      .asObservable()
-      .subscribe((val) => {
-        val
+    this.router.events
+      .pipe(
+        filter(
+          (e: NavigationEnd): e is NavigationEnd => e instanceof NavigationEnd
+        )
+      )
+      .subscribe((value) => {
+        this.loggedIn = value.url !== '/session/login';
+        this.loggedIn
           ? this.changeToolbarForLoggedIn()
           : this.changeToolbarForNotLoggedIn();
-        this.loggedIn = val;
       });
   }
 
@@ -53,4 +55,5 @@ export class ToolbarComponent implements OnInit, OnDestroy {
     this.title = 'IST';
     this.loggedAs = this.cookie.get('_username');
   }
+
 }

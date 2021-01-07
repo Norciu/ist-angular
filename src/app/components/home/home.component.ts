@@ -1,36 +1,21 @@
-import { Component, OnInit } from '@angular/core';
-import {
-  HomeService,
-  LocationsApiData,
-} from '../../services/home/home.service';
-import {catchError} from 'rxjs/operators';
-
-export interface PeriodicElement {
-  id: number;
-  cityName: string;
-  streetName: string;
-  homeNo: string;
-  technology: string;
-  description: { str: string };
-}
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { HomeService } from '../../services/home/home.service';
+import { LocationApi } from '../../interfaces';
+import { DatatableComponent } from '@swimlane/ngx-datatable';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
-  // animations: [
-  //   trigger('detailExpand', [
-  //     state('collapsed', style({ height: '0px', minHeight: '0' })),
-  //     state('expanded', style({ height: '*' })),
-  //     transition(
-  //       'expanded <=> collapsed',
-  //       animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')
-  //     ),
-  //   ]),
-  // ],
 })
 export class HomeComponent implements OnInit {
   loadingIndicator: boolean;
+  locations: LocationApi[];
+  timeout: any;
+  tempFilter = [];
+
+  @ViewChild('homeTable') table: any;
+  @ViewChild(DatatableComponent) table2: DatatableComponent;
 
   constructor(private homeService: HomeService) {}
 
@@ -38,11 +23,42 @@ export class HomeComponent implements OnInit {
     this.loadingIndicator = true;
     this.homeService
       .getAllAvailableLocations()
-      .pipe(catchError(err => {
-        throw new Error(err);
-      }))
-      .subscribe((val: { locations: LocationsApiData[] }) => {
-        console.log(val)
+      .subscribe((val: LocationApi[]) => {
+        this.tempFilter = [...val];
+        this.locations = val;
+        this.loadingIndicator = false;
       });
+  }
+
+  toggleExpandRow(row): void {
+    this.table.rowDetail.toggleExpandRow(row);
+  }
+
+
+  onPage(event): void {
+    clearTimeout(this.timeout);
+    this.timeout = setTimeout(() => {
+      console.log('paged!', event);
+    }, 100);
+  }
+
+  filterTable(event): void {
+    const val = event.target.value.toLowerCase();
+    const split = val.split(/,?\s|\s/, 2);
+    console.log(split);
+    this.locations = this.tempFilter.filter((value: LocationApi) => {
+      if (split.length === 2) {
+        return (
+          value.street.city.cityName.toLowerCase().indexOf(split[0]) !== -1 &&
+          value.street.streetName.toLowerCase().indexOf(split[1]) !== -1
+        );
+      } else if (split.length === 1) {
+        return (
+          value.street.city.cityName.toLowerCase().indexOf(val) !== -1 ||
+          value.street.streetName.toLowerCase().indexOf(val) !== -1
+        );
+      }
+    });
+    this.table2.offset = 0;
   }
 }

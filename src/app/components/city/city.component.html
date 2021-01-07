@@ -13,6 +13,10 @@
         <input matInput id="cityName" formControlName="cityName" required autocomplete="off">
       </mat-form-field>
       <mat-form-field appearance="outline">
+        <mat-label>Kod pocztowy</mat-label>
+        <input matInput id="postalCode" formControlName="postalCode" required autocomplete="off" pattern="[0-9]{2}-[0-9]{3}">
+      </mat-form-field>
+      <mat-form-field appearance="outline">
         <mat-label>Kod SIMC</mat-label>
         <input id="simc" formControlName="simc" matInput required autocomplete="off">
       </mat-form-field>

@@ -1,31 +1,20 @@
 <div>
   <ngx-datatable
-    #citiesTable
+    #technologyTable
     [headerHeight]="50"
     class="material"
-    [rows]="rows"
+    [rows]="technologies"
     rowHeight="auto"
     [columnMode]="'force'"
-    [loadingIndicator]="loadingIndicator"
   >
     <ngx-datatable-column prop="id" name="#">
-      <ng-template let-row="row" ngx-datatable-cell-template>
-        {{ row.id }}
+      <ng-template let-row="row" let-rowIndex="rowIndex" ngx-datatable-cell-template>
+        {{ rowIndex +1 }}
       </ng-template>
     </ngx-datatable-column>
-    <ngx-datatable-column prop="cityName" name="Nazwa miejscowości">
+    <ngx-datatable-column prop="technologyName" name="Nazwa technologii">
       <ng-template let-row="row" ngx-datatable-cell-template>
-        {{ row.cityName }}
-      </ng-template>
-    </ngx-datatable-column>
-    <ngx-datatable-column prop="postalCode" name="Kod pocztowy">
-      <ng-template let-row="row" ngx-datatable-cell-template>
-        {{ row.postalCode }}
-      </ng-template>
-    </ngx-datatable-column>
-    <ngx-datatable-column prop="simc" name="Kod SIMC">
-      <ng-template let-row="row" ngx-datatable-cell-template>
-        {{ row.simc }}
+        {{ row.technologyName }}
       </ng-template>
     </ngx-datatable-column>
     <ngx-datatable-column prop="createdAt" name="Data utworzenia">

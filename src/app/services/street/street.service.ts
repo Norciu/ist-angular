@@ -26,11 +26,19 @@ export class StreetService {
     );
   }
 
-  addStreetToDatabase(citySimc: string, streetName: string, ulic: string): Observable<object> {
+  addStreetToDatabase(
+    citySimc: string,
+    streetName: string,
+    ulic: string
+  ): Observable<object> {
     return this.http.put(environment.apiUrl + '/street/insert', {
       citySimc,
       streetName,
-      ulic
+      ulic,
     });
+  }
+
+  getStreetsForCity(simc: string): Observable<object> {
+    return this.http.get(environment.apiUrl + '/street/search?simc=' + simc);
   }
 }

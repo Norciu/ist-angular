@@ -4,8 +4,8 @@ import { HttpClient } from '@angular/common/http';
 import { StreetService } from '../../services/street/street.service';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
-import {Router} from '@angular/router';
-import {Snacks} from '../../helpers/snacks';
+import { Router } from '@angular/router';
+import { Snacks } from '../../helpers/snacks';
 
 export interface AvailableCities {
   id: number;
@@ -34,7 +34,7 @@ export class StreetComponent implements OnInit {
     private http: HttpClient,
     private streetService: StreetService,
     private router: Router,
-    private snacks: Snacks,
+    private snacks: Snacks
   ) {}
 
   ngOnInit(): void {
@@ -43,6 +43,7 @@ export class StreetComponent implements OnInit {
       .toPromise()
       .then((val: AvailableCities[]) => {
         this.availableCities = val;
+        this._setErrorIfEmpty();
         this.filteredCities = this.streetForm.get('city').valueChanges.pipe(
           startWith(''),
           map((value) => {
@@ -50,6 +51,12 @@ export class StreetComponent implements OnInit {
           })
         );
       });
+  }
+
+  private _setErrorIfEmpty(): void {
+    if (this.availableCities.length === 0) {
+      this.streetForm.controls.city.setErrors({ noCities: true });
+    }
   }
 
   private _filter(value: string): AvailableCities[] {
@@ -69,13 +76,15 @@ export class StreetComponent implements OnInit {
   }
 
   public add(): void {
-    if (this._validForms()){
+    if (this._validForms()) {
       const street = this.streetForm.get('streetName').value;
       const ulic = this.streetForm.get('ulic').value;
-      this.streetService.addStreetToDatabase(this.simc, street, ulic).subscribe(value => {
-        this.router.navigate(['/street/add-new']);
-        this.snacks.successInfo('Pomyślnie dodano ulicę!');
-      });
+      this.streetService
+        .addStreetToDatabase(this.simc, street, ulic)
+        .subscribe((value) => {
+          this.router.navigate(['/street/add-new']);
+          this.snacks.successInfo('Pomyślnie dodano ulicę!');
+        });
     }
   }
 }

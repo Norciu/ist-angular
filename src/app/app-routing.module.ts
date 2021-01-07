@@ -5,6 +5,8 @@ import {AuthGuard} from './guards/auth/auth.guard';
 import {HomeComponent} from './components/home/home.component';
 import {CityComponent} from './components/city/city.component';
 import {StreetComponent} from './components/street/street.component';
+import {TechnologyComponent} from './components/technology/technology.component';
+import {LocationComponent} from './components/location/location.component';
 
 const routes: Routes = [
   {path: '', redirectTo: 'home', pathMatch: 'full'},
@@ -12,6 +14,8 @@ const routes: Routes = [
   {path: 'home', component: HomeComponent, canActivate: [AuthGuard]},
   {path: 'city/add-new', component: CityComponent, canActivate: [AuthGuard]},
   {path: 'street/add-new', component: StreetComponent, canActivate: [AuthGuard]},
+  {path: 'technology/add-new', component: TechnologyComponent, canActivate: [AuthGuard]},
+  {path: 'location/add-new', component: LocationComponent, canActivate: [AuthGuard]}
 ];
 
 @NgModule({

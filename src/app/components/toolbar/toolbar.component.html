@@ -4,13 +4,22 @@
     <button mat-icon-button matTooltip="Strona główna" *ngIf="loggedIn" [routerLink]="['/home']"><mat-icon>home</mat-icon></button>
   </div>
   <div fxLayout="col" fxFlex="85" *ngIf="loggedIn">
-    <button mat-button [matMenuTriggerFor]="menu">Adres</button>
-    <mat-menu #menu>
+    <button mat-button [matMenuTriggerFor]="menuAddress">Adres</button>
+    <mat-menu #menuAddress>
       <button mat-menu-item [routerLink]="['/city/add-new']">
         Dodaj nową miejscowość
       </button>
       <button mat-menu-item [routerLink]="['/street/add-new']">
         Dodaj nową ulicę
+      </button>
+      <button mat-menu-item [routerLink]="['/location/add-new']">
+        Dodaj nową lokalizację
+      </button>
+    </mat-menu>
+    <button mat-button [matMenuTriggerFor]="menuTechnology">Technologia</button>
+    <mat-menu #menuTechnology>
+      <button mat-menu-item [routerLink]="['/technology/add-new']">
+        Dodaj nową
       </button>
     </mat-menu>
   </div>

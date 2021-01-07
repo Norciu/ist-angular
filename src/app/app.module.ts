@@ -21,9 +21,8 @@ import {MatTooltipModule} from '@angular/material/tooltip';
 import { FocusInvalidInputDirective } from './components/toolbar/focus-invalid-input.directive';
 import {MatMenuModule} from '@angular/material/menu';
 import {MatTableModule} from '@angular/material/table';
-import {MatPaginatorIntl, MatPaginatorModule} from '@angular/material/paginator';
+import {MatPaginatorModule} from '@angular/material/paginator';
 import {MatExpansionModule} from '@angular/material/expansion';
-import {Locales} from './helpers/locales';
 import {HTTP_INTERCEPTORS, HttpClientModule} from '@angular/common/http';
 import {CookieService} from 'ngx-cookie-service';
 import {NgxDatatableModule} from '@swimlane/ngx-datatable';
@@ -36,6 +35,10 @@ import localePl from '@angular/common/locales/pl';
 import {MatSelectModule} from '@angular/material/select';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import { StreetsTableComponent } from './components/street/streets-table/streets-table.component';
+import { TechnologyComponent } from './components/technology/technology.component';
+import { TechnologyTableComponent } from './components/technology/technology-table/technology-table.component';
+import { LocationComponent } from './components/location/location.component';
+import {MatStepperModule} from '@angular/material/stepper';
 
 registerLocaleData(localePl, 'pl');
 
@@ -50,6 +53,9 @@ registerLocaleData(localePl, 'pl');
     CityComponent,
     CitiesTableComponent,
     StreetsTableComponent,
+    TechnologyComponent,
+    TechnologyTableComponent,
+    LocationComponent,
   ],
   imports: [
     BrowserModule,
@@ -73,12 +79,12 @@ registerLocaleData(localePl, 'pl');
     HttpClientModule,
     NgxDatatableModule,
     MatSelectModule,
-    MatAutocompleteModule
+    MatAutocompleteModule,
+    MatStepperModule
   ],
   providers: [
     {provide: LOCALE_ID, useValue: 'pl'},
     AuthGuard,
-    { provide: MatPaginatorIntl, useValue: Locales.paginatorPl() },
     CookieService,
     {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true}
   ],

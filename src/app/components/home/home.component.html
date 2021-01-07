@@ -1,38 +1,138 @@
+<div fxLayoutAlign="center">
+  <mat-form-field style="width: 60%">
+    <mat-label>Wprowadź nazwę miejscowości oraz ulicę po przecinku, aby przefiltrować!</mat-label>
+    <input type="text" matInput (keyup)="filterTable($event)" placeholder="Katowice, Mickiewicza"/>
+  </mat-form-field>
+</div>
 <div>
-<!--  <ngx-datatable-->
-<!--    #citiesTable-->
-<!--    [headerHeight]="50"-->
-<!--    class="material"-->
-<!--    [rows]="rows"-->
-<!--    rowHeight="auto"-->
-<!--    [columnMode]="'force'"-->
-<!--    [loadingIndicator]="loadingIndicator"-->
-
-<!--  >-->
-<!--    <ngx-datatable-column prop="id" name="#">-->
-<!--      <ng-template let-row="row" ngx-datatable-cell-template>-->
-<!--        {{ row.id }}-->
-<!--      </ng-template>-->
-<!--    </ngx-datatable-column>-->
-<!--    <ngx-datatable-column prop="cityName" name="Nazwa miejscowości">-->
-<!--      <ng-template let-row="row" ngx-datatable-cell-template>-->
-<!--        {{ row.cityName }}-->
-<!--      </ng-template>-->
-<!--    </ngx-datatable-column>-->
-<!--    <ngx-datatable-column prop="simc" name="Kod SIMC">-->
-<!--      <ng-template let-row="row" ngx-datatable-cell-template>-->
-<!--        {{ row.simc }}-->
-<!--      </ng-template>-->
-<!--    </ngx-datatable-column>-->
-<!--    <ngx-datatable-column prop="createdAt" name="Data utworzenia">-->
-<!--      <ng-template let-row="row" ngx-datatable-cell-template>-->
-<!--        {{ row.createdAt | date: 'medium' }}-->
-<!--      </ng-template>-->
-<!--    </ngx-datatable-column>-->
-<!--    <ngx-datatable-column prop="updatedAt" name="Data ostatniej edycji">-->
-<!--      <ng-template let-row="row" ngx-datatable-cell-template>-->
-<!--        {{ row.updatedAt | date: 'medium'}}-->
-<!--      </ng-template>-->
-<!--    </ngx-datatable-column>-->
-<!--  </ngx-datatable>-->
+  <ngx-datatable
+    #homeTable
+    class="material expandable"
+    columnMode="force"
+    [headerHeight]="50"
+    [footerHeight]="50"
+    [rowHeight]="50"
+    [scrollbarV]="false"
+    [rows]="locations"
+    (page)="onPage($event)"
+    [loadingIndicator]="loadingIndicator"
+    limit="5"
+  >
+    <!-- Row Detail Template -->
+    <ngx-datatable-row-detail fxFlex="100" [rowHeight]="120" #rowDetailer>
+      <ng-template
+        let-row="row"
+        let-owner="row.location_owner"
+        let-city="row.street.city"
+        let-street="row.street"
+        let-technology="row.availableTechnology.technologyName"
+        ngx-datatable-row-detail-template
+      >
+        <div fxFlex="20">
+          <div><strong>Właściciel posesji</strong></div>
+          <div *ngIf="!row.location_owner">
+            <div>Brak Danych</div>
+          </div>
+          <div *ngIf="owner && owner.clientType === 1">
+            <div>
+              Imię i nazwisko:<strong>
+                {{ owner.firstName }} {{ owner.lastName }}</strong
+              >
+            </div>
+            <div *ngIf="owner.phoneNo">Numer Telefonu: <strong>{{ owner.phoneNo }}</strong></div>
+            <div *ngIf="owner.email">Email: {{ owner.email }}</div>
+          </div>
+          <div *ngIf="owner && owner.clientType === 2">
+            <div>Nazwa firmy: {{ owner.companyName }}</div>
+            <div>
+              Imię i nazwisko osoby kontaktowej: {{ owner.firstName }}
+              {{ owner.lastName }}
+            </div>
+            <div *ngIf="owner.phoneNo">Numer Telefonu: {{ owner.phoneNo }}</div>
+            <div *ngIf="owner.email">Email: <strong>{{ owner.email }}</strong></div>
+          </div>
+        </div>
+        <div fxFlex="20">
+          <div><strong>Miejscowość</strong></div>
+          <div>Nazwa: <strong>{{city.cityName}}</strong></div>
+          <div>Kod pocztowy: <strong>{{city.postalCode}}</strong></div>
+          <div>Kod SIMC: <strong>{{city.simc}}</strong></div>
+        </div>
+        <div fxFlex="20">
+          <div><strong>Ulica</strong></div>
+          <div>Nazwa: <strong>{{street.streetName}}</strong></div>
+          <div>Kod ULIC: <strong>{{street.ulic}}</strong></div>
+        </div>
+        <div fxFlex="20">
+          <div><strong>Lokalizacja</strong></div>
+          <div>Numer budynku: <strong>{{row.flatNo}}</strong></div>
+          <div>Numer porządkowy: <strong>{{row.homeNo}}</strong></div>
+        </div>
+        <div fxFlex="20">
+          <div><strong>Najlepsza dostępna technologia:</strong></div>
+          <div>Specyfikacja: <strong>{{technology}}</strong></div>
+        </div>
+      </ng-template>
+    </ngx-datatable-row-detail>
+    <!-- Column Templates -->
+    <ngx-datatable-column
+      [width]="50"
+      [resizeable]="true"
+      [sortable]="true"
+      [draggable]="false"
+      [canAutoResize]="true"
+    >
+      <ng-template
+        let-row="row"
+        let-expanded="expanded"
+        ngx-datatable-cell-template
+      >
+        <a
+          href="javascript:void(0)"
+          [class.datatable-icon-right]="!expanded"
+          [class.datatable-icon-down]="expanded"
+          title="Pokaż / ukryj szczegóły"
+          (click)="toggleExpandRow(row)"
+        >
+        </a>
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="#" [width]="80">
+      <ng-template
+        let-rowIndex="rowIndex"
+        let-row="row"
+        ngx-datatable-cell-template
+      >
+        <strong>{{ rowIndex }}</strong>
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Miejscowość" prop="street.city.cityName">
+      <ng-template let-value="value" ngx-datatable-cell-template>
+        <strong>{{ value }}</strong>
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Ulica" prop="street.streetName">
+      <ng-template let-value="value" ngx-datatable-cell-template>
+        {{ value }}
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Numer budynku" prop="flatNo">
+      <ng-template let-value="value" ngx-datatable-cell-template>
+        {{ value }}
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Numer porządkowy" prop="homeNo">
+      <ng-template let-value="value" ngx-datatable-cell-template>
+        <strong>{{ value }}</strong>
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column
+      name="Technologia"
+      prop="availableTechnology.technologyName"
+    >
+      <ng-template let-value="value" ngx-datatable-cell-template>
+        <strong>{{ value }}</strong>
+      </ng-template>
+    </ngx-datatable-column>
+  </ngx-datatable>
 </div>

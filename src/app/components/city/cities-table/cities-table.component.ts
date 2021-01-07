@@ -1,14 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
-
-export interface CityDatabase {
-  id: number;
-  cityName: string;
-  simc: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
+import { CityDatabaseInterface } from '../../../interfaces';
 
 @Component({
   selector: 'app-cities-table',
@@ -18,7 +11,7 @@ export interface CityDatabase {
 export class CitiesTableComponent implements OnInit {
   loadingIndicator: boolean;
 
-  rows: CityDatabase[];
+  rows: CityDatabaseInterface[];
 
   constructor(private http: HttpClient) {}
 
@@ -26,7 +19,7 @@ export class CitiesTableComponent implements OnInit {
     this.loadingIndicator = true;
     this.http
       .get(environment.apiUrl + '/city/get-all')
-      .subscribe((val: CityDatabase[]) => {
+      .subscribe((val: CityDatabaseInterface[]) => {
         this.rows = val;
         this.loadingIndicator = false;
       });
