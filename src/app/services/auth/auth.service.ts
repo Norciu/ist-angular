@@ -22,11 +22,7 @@ export class AuthService {
   ) {}
 
   login(username: string, password: string): Subscription {
-    return this.http
-      .post(
-        environment.apiUrl + '/user/login',
-        { username, password },
-      )
+    return this.http.post<{ authorization: string, username: string }>(`${environment.apiUrl}/user/login`, { username, password })
       .pipe(
         catchError((err) => {
           if (err.status === 401) {
@@ -37,9 +33,9 @@ export class AuthService {
           return throwError(err);
         })
       )
-      .subscribe((val: { token: string }) => {
-        if (val.token) {
-          return this.setNewSession(val.token, username);
+      .subscribe(({ authorization, username}) => {
+        if (authorization && username) {
+          return this.setNewSession(authorization, username);
         }
       });
   }
@@ -57,8 +53,14 @@ export class AuthService {
     this.snack.successInfo('Pomyślnie wylogowano z systemu!');
   }
 
-  private async setNewSession(jwt: string, username: string): Promise<void> {
+  private async setNewSession(authorization: string, username: string): Promise<void> {
     this.loggedIn$.next(true);
+    this.setSession(authorization, username);
     await this.router.navigate(['/home']);
+  }
+
+  public setSession(authorization: string, username: string): void {
+    localStorage.setItem('authorization', authorization);
+    localStorage.setItem('username', username);
   }
 }

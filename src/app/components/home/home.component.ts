@@ -2,6 +2,8 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { HomeService } from '../../services/home/home.service';
 import { LocationApi } from '../../interfaces';
 import { DatatableComponent } from '@swimlane/ngx-datatable';
+import { MatDialog } from '@angular/material/dialog';
+import { CommentsComponent } from './comments/comments.component';
 
 @Component({
   selector: 'app-home',
@@ -17,7 +19,7 @@ export class HomeComponent implements OnInit {
   @ViewChild('homeTable') table: any;
   @ViewChild(DatatableComponent) table2: DatatableComponent;
 
-  constructor(private homeService: HomeService) {}
+  constructor(private homeService: HomeService, public dialog: MatDialog) {}
 
   ngOnInit(): void {
     this.loadingIndicator = true;
@@ -28,6 +30,14 @@ export class HomeComponent implements OnInit {
         this.locations = val;
         this.loadingIndicator = false;
       });
+  }
+
+  openDialog(locationId: string): void {
+    const dialogRef = this.dialog.open(CommentsComponent, {
+      width: '500px',
+      height: '500px',
+      data: { locationId }
+    });
   }
 
   toggleExpandRow(row): void {

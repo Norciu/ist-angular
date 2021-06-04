@@ -8,7 +8,7 @@ import {
 } from '@angular/router';
 import { Observable } from 'rxjs';
 import { AuthService } from '../../services/auth/auth.service';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { CookieService } from 'ngx-cookie-service';
 import { catchError } from 'rxjs/operators';
@@ -40,7 +40,9 @@ export class AuthGuard implements CanActivate {
 
   public checkSession(): Promise<boolean> {
     return this.http
-      .get(environment.apiUrl + '/user/is-logged')
+      .get(environment.apiUrl + '/user/is-logged', { headers: new HttpHeaders({
+          authorization: localStorage.getItem('authorization'),
+        })})
       .pipe(
         catchError((err) => {
           this.router.navigate(['/session/login']);
@@ -66,6 +68,6 @@ export class AuthGuard implements CanActivate {
   }
 
   private clearSession(): void {
-    this.cookies.deleteAll();
+    localStorage.clear();
   }
 }

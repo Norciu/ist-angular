@@ -22,6 +22,7 @@
     <ngx-datatable-row-detail fxFlex="100" [rowHeight]="120" #rowDetailer>
       <ng-template
         let-row="row"
+        let-id="row.id"
         let-owner="row.location_owner"
         let-city="row.street.city"
         let-street="row.street"
@@ -72,6 +73,9 @@
           <div><strong>Najlepsza dostępna technologia:</strong></div>
           <div>Specyfikacja: <strong>{{technology}}</strong></div>
         </div>
+        <div>
+          <button mat-button color="primary" mat-raised-button (click)="openDialog(id)">Komentarze</button>
+        </div>
       </ng-template>
     </ngx-datatable-row-detail>
     <!-- Column Templates -->
@@ -103,7 +107,7 @@
         let-row="row"
         ngx-datatable-cell-template
       >
-        <strong>{{ rowIndex }}</strong>
+        <strong>{{ rowIndex + 1 }}</strong>
       </ng-template>
     </ngx-datatable-column>
     <ngx-datatable-column name="Miejscowość" prop="street.city.cityName">

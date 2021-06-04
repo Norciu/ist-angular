@@ -1,0 +1,29 @@
+<ng-container *ngIf="comments.length" mat-dialog-content>
+  <p>Komentarze dla lokalizacji</p>
+  <div *ngFor="let comment of comments">
+    <mat-card style="background-color: gainsboro; margin-top: 10px">
+      <mat-card-header>
+        <mat-card-title>
+          {{comment.created_at | date: 'short'}}
+        </mat-card-title>
+        <mat-card-subtitle>
+          {{comment.user_name}}
+        </mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        {{comment.description}}
+      </mat-card-content>
+    </mat-card>
+  </div>
+</ng-container>
+<div *ngIf="!comments.length">
+  Brak komentarzy dla tego zgłoszenia.
+</div>
+<mat-form-field class="comment-description">
+  <mat-label>Wpisz swój komentarz</mat-label>
+  <textarea matInput [(ngModel)]="description"></textarea>
+</mat-form-field>
+<div mat-dialog-actions>
+  <button style="float: right" mat-button color="accent" (click)="onNoClick()">Zamknij</button>
+  <button mat-raised-button color="accent" (click)="add(locationId, description)">Dodaj komentarz</button>
+</div>

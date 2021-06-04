@@ -22,6 +22,12 @@
         Dodaj nową
       </button>
     </mat-menu>
+    <button mat-button [mat-menu-trigger-for]="maps">Mapa</button>
+    <mat-menu #maps>
+      <button mat-menu-item [routerLink]="['/maps/show-points']">
+        Wyświetl punkty
+      </button>
+    </mat-menu>
   </div>
   <div fxLayout="col" fxFlex="10" *ngIf="loggedIn" matTooltip="Zalogowany jako">
     <mat-icon>person</mat-icon>

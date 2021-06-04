@@ -39,6 +39,8 @@ import { TechnologyComponent } from './components/technology/technology.componen
 import { TechnologyTableComponent } from './components/technology/technology-table/technology-table.component';
 import { LocationComponent } from './components/location/location.component';
 import {MatStepperModule} from '@angular/material/stepper';
+import { MatDialogModule } from '@angular/material/dialog';
+import { CommentsComponent } from './components/home/comments/comments.component';
 
 registerLocaleData(localePl, 'pl');
 
@@ -56,6 +58,7 @@ registerLocaleData(localePl, 'pl');
     TechnologyComponent,
     TechnologyTableComponent,
     LocationComponent,
+    CommentsComponent,
   ],
   imports: [
     BrowserModule,
@@ -80,7 +83,8 @@ registerLocaleData(localePl, 'pl');
     NgxDatatableModule,
     MatSelectModule,
     MatAutocompleteModule,
-    MatStepperModule
+    MatStepperModule,
+    MatDialogModule
   ],
   providers: [
     {provide: LOCALE_ID, useValue: 'pl'},

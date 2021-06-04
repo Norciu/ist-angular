@@ -17,11 +17,10 @@ export class AuthInterceptor implements HttpInterceptor {
     request: HttpRequest<unknown>,
     next: HttpHandler
   ): Observable<HttpEvent<unknown>> {
-    const jwt = this.cookies.get('_jwt');
+    const token = localStorage.getItem('authorization');
     const authReq = request.clone({
-      setHeaders: { authorization: jwt },
-      withCredentials: true
+      setHeaders: { authorization: token },
     });
-    return jwt ? next.handle(authReq) : next.handle(request.clone({withCredentials: true}));
+    return token ? next.handle(authReq) : next.handle(request);
   }
 }
