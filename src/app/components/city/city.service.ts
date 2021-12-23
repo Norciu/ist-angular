@@ -14,14 +14,14 @@ export class CityService {
     return this.http.put(
       environment.apiUrl + '/city/insert',
       {
-        cityName,
-        postalCode,
+        city_name: cityName,
+        postal_code: postalCode,
         simc,
       },
     );
   }
 
   getAll(): Observable<object> {
-    return this.http.get(environment.apiUrl + '/city/get-all');
+    return this.http.get(environment.apiUrl + '/city/getAll');
   }
 }

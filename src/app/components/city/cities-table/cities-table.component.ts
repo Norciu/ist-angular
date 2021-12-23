@@ -18,7 +18,7 @@ export class CitiesTableComponent implements OnInit {
   ngOnInit(): void {
     this.loadingIndicator = true;
     this.http
-      .get(environment.apiUrl + '/city/get-all')
+      .get(environment.apiUrl + '/city/getAll')
       .subscribe((val: CityDatabaseInterface[]) => {
         this.rows = val;
         this.loadingIndicator = false;

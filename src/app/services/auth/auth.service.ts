@@ -22,7 +22,7 @@ export class AuthService {
   ) {}
 
   login(username: string, password: string): Subscription {
-    return this.http.post<{ authorization: string, username: string }>(`${environment.apiUrl}/user/login`, { username, password })
+    return this.http.post<{ authorization: string, username: string }>(`${environment.apiUrl}/users/login`, { username, password })
       .pipe(
         catchError((err) => {
           if (err.status === 401) {
@@ -48,8 +48,8 @@ export class AuthService {
   }
 
   logout(): void {
-    this.cookie.deleteAll();
     this.loggedIn$.next(false);
+    localStorage.clear();
     this.snack.successInfo('Pomyślnie wylogowano z systemu!');
   }
 

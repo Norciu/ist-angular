@@ -24,8 +24,14 @@
     </mat-menu>
     <button mat-button [mat-menu-trigger-for]="maps">Mapa</button>
     <mat-menu #maps>
-      <button mat-menu-item [routerLink]="['/maps/show-points']">
+      <button mat-menu-item [routerLink]="['/map/show-points']">
         Wyświetl punkty
+      </button>
+    </mat-menu>
+    <button mat-button [mat-menu-trigger-for]="statistic">Statystyka</button>
+    <mat-menu #statistic>
+      <button mat-menu-item [routerLink]="['/statistic/connected']">
+        Podłączeni użytkownicy
       </button>
     </mat-menu>
   </div>

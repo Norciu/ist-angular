@@ -41,6 +41,7 @@ import { LocationComponent } from './components/location/location.component';
 import {MatStepperModule} from '@angular/material/stepper';
 import { MatDialogModule } from '@angular/material/dialog';
 import { CommentsComponent } from './components/home/comments/comments.component';
+import { MapComponent } from './components/map/map.component';
 
 registerLocaleData(localePl, 'pl');
 
@@ -59,6 +60,7 @@ registerLocaleData(localePl, 'pl');
     TechnologyTableComponent,
     LocationComponent,
     CommentsComponent,
+    MapComponent,
   ],
   imports: [
     BrowserModule,

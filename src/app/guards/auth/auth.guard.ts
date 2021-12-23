@@ -27,44 +27,14 @@ export class AuthGuard implements CanActivate {
     private cookies: CookieService,
     private snacks: Snacks
   ) {}
-  canActivate(
-    route: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot
-  ):
-    | Observable<boolean | UrlTree>
-    | Promise<boolean | UrlTree>
-    | boolean
-    | UrlTree {
+  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean| UrlTree {
     return this.checkSession();
   }
 
-  public checkSession(): Promise<boolean> {
-    return this.http
-      .get(environment.apiUrl + '/user/is-logged', { headers: new HttpHeaders({
-          authorization: localStorage.getItem('authorization'),
-        })})
-      .pipe(
-        catchError((err) => {
-          this.router.navigate(['/session/login']);
-          if (err.status !== 500 && err.status !== 0) {
-            this.snacks.dangerInfo(
-              'Brak autoryzacji! Zaloguj się, aby kontynuować.'
-            );
-          } else {
-            this.snacks.dangerInfo(
-              'Aplikacja jest aktualnie niedostępna! Spróbuj ponownie później.'
-            );
-          }
-          this.isLogged = false;
-          this.clearSession();
-          throw new Error(err);
-        })
-      )
-      .toPromise()
-      .then((value: { isLogged: boolean }) => {
-        this.isLogged = true;
-        return value.isLogged;
-      });
+  public checkSession(): boolean {
+    const auth = localStorage.getItem('authorization');
+    const username = localStorage.getItem('username');
+    return Boolean(auth && auth.length && username && username.length);
   }
 
   private clearSession(): void {

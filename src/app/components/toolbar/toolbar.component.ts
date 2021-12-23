@@ -53,7 +53,7 @@ export class ToolbarComponent implements OnInit, OnDestroy {
 
   changeToolbarForLoggedIn(): void {
     this.title = 'IST';
-    this.loggedAs = this.cookie.get('_username');
+    this.loggedAs = localStorage.getItem('username');
   }
 
 }

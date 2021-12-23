@@ -22,7 +22,7 @@ export class HomeService {
   constructor(private http: HttpClient) {}
 
   getAllAvailableLocations(): Observable<object> {
-    return this.http.get(environment.apiUrl + '/location/get-all').pipe(
+    return this.http.get(environment.apiUrl + '/locations/getAll').pipe(
       catchError((err) => {
         throw new Error(err);
       })
