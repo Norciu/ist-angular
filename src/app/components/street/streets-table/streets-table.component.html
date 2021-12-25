@@ -1,31 +1,40 @@
 <div>
   <ngx-datatable
     #streetsTable
-    [headerHeight]="50"
     class="material"
     [rows]="rows"
+    [columnMode]="ColumnMode.force"
+    [headerHeight]="50"
+    [footerHeight]="50"
     rowHeight="auto"
-    [columnMode]="'force'"
-    [loadingIndicator]="loadingIndicator"
+    [externalPaging]="true"
+    [count]="page.totalElements"
+    [offset]="page.pageNumber"
+    [limit]="page.size"
+    (page)="setPage($event)"
+    [messages]="{
+      emptyMessage: 'Nie znaleziono żadnych ulic',
+      totalMessage: 'rekordów'
+    }"
   >
     <ngx-datatable-column prop="id" name="#">
-      <ng-template let-row="row" let-rowIndex="rowIndex" ngx-datatable-cell-template>
-        {{ rowIndex +1 }}
+      <ng-template let-row="row" ngx-datatable-cell-template>
+        {{ row.id }}
       </ng-template>
     </ngx-datatable-column>
     <ngx-datatable-column prop="cityName" name="Nazwa miejscowości">
       <ng-template let-row="row" ngx-datatable-cell-template>
-        {{ row.city.cityName }}
+        {{ row.city_id.cityName }}
       </ng-template>
     </ngx-datatable-column>
     <ngx-datatable-column prop="postalCode" name="Kod pocztowy">
       <ng-template let-row="row" ngx-datatable-cell-template>
-        {{ row.city.postalCode }}
+        {{ row.city_id.postalCode }}
       </ng-template>
     </ngx-datatable-column>
     <ngx-datatable-column prop="simc" name="Kod SIMC">
       <ng-template let-row="row" ngx-datatable-cell-template>
-        {{ row.city.simc }}
+        {{ row.city_id.simc }}
       </ng-template>
     </ngx-datatable-column>
     <ngx-datatable-column prop="streetName" name="Ulica">
@@ -40,12 +49,12 @@
     </ngx-datatable-column>
     <ngx-datatable-column prop="createdAt" name="Data utworzenia">
       <ng-template let-row="row" ngx-datatable-cell-template>
-        {{ row.createdAt | date: 'medium' }}
+        {{ row.created_at | date: 'medium' }}
       </ng-template>
     </ngx-datatable-column>
     <ngx-datatable-column prop="updatedAt" name="Data ostatniej edycji">
       <ng-template let-row="row" ngx-datatable-cell-template>
-        {{ row.updatedAt | date: 'medium'}}
+        {{ row.updated_at | date: 'medium'}}
       </ng-template>
     </ngx-datatable-column>
   </ngx-datatable>

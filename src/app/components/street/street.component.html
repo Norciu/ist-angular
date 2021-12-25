@@ -14,6 +14,7 @@
               type="text"
               placeholder="Wybierz miejscowość"
               formControlName="city"
+              (ngModelChange)="this.citySearchInput.next($event)"
               matInput
               [matAutocomplete]="auto"
               required
@@ -28,15 +29,16 @@
             >
             <mat-autocomplete #auto="matAutocomplete">
               <mat-option
-                *ngFor="let option of filteredCities | async"
-                [value]="option.cityName"
-                (onSelectionChange)="citySimc = option.simc"
-              >
-                <span>{{ option.cityName }}</span> |
-                <small>Kod SIMC: {{ option.simc }}</small>
+                *ngFor="let city of availableCities"
+                [value]="city.cityName"
+                (onSelectionChange)="selectCity = city">
+                <span>{{ city.cityName }}</span> |
+                <small>Kod pocztowy: {{ city.postalCode }}</small> |
+                <small>Kod SIMC: {{ city.simc }}</small>
               </mat-option>
+              <footer style="position: absolute;">Znaleziono: {{ citySearchTotal }}, ograniczono listę do 10</footer>
             </mat-autocomplete>
-            <mat-hint *ngIf="simc">Kod SIMC: {{ simc }}</mat-hint>
+            <mat-hint *ngIf="selectedCity">Kod SIMC: {{ selectedCity.simc }} | Kod pocztowy: {{ selectedCity.postalCode }}</mat-hint>
           </mat-form-field>
         </div>
         <div fxLayout="row" fxLayoutGap="20px" fxLayoutAlign="center">
@@ -77,4 +79,4 @@
   </mat-card>
   <div fxFlex="20"></div>
 </div>
-<app-streets-table></app-streets-table>
+<app-streets-table [selectedCityStreets] [selectedCityStreetsTotal]></app-streets-table>
