@@ -6,4 +6,10 @@ export interface CityDatabaseInterface {
   updatedAt: Date;
 }
 
-export type CityDatabase = CityDatabaseInterface | {status: 'CityExist'};
+export interface CityRequestAll {
+  result: CityDatabaseInterface[];
+  total: number;
+  success: boolean;
+}
+
+export type CityDatabase = CityDatabaseInterface | { status: 'CityExist' };

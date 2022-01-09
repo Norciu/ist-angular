@@ -1,15 +1,25 @@
 <div>
   <ngx-datatable
     #technologyTable
-    [headerHeight]="50"
     class="material"
-    [rows]="technologies"
+    [rows]="rows"
+    [columnMode]="ColumnMode.force"
+    [headerHeight]="50"
+    [footerHeight]="50"
     rowHeight="auto"
-    [columnMode]="'force'"
+    [externalPaging]="true"
+    [count]="page.totalElements"
+    [offset]="page.pageNumber"
+    [limit]="page.size"
+    (page)="setPage($event)"
+    [messages]="{
+      emptyMessage: 'Nie znaleziono technologii',
+      totalMessage: 'rekordów'
+    }"
   >
     <ngx-datatable-column prop="id" name="#">
-      <ng-template let-row="row" let-rowIndex="rowIndex" ngx-datatable-cell-template>
-        {{ rowIndex +1 }}
+      <ng-template let-row="row" ngx-datatable-cell-template>
+        {{ row.id }}
       </ng-template>
     </ngx-datatable-column>
     <ngx-datatable-column prop="technologyName" name="Nazwa technologii">

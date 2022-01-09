@@ -5,7 +5,7 @@ import { Subject, Subscription, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { Snacks } from '../../helpers/snacks';
-import { CookieService } from 'ngx-cookie-service';
+import { AuthGuard } from 'src/app/guards/auth/auth.guard';
 
 @Injectable({
   providedIn: 'root',
@@ -18,7 +18,7 @@ export class AuthService {
     private http: HttpClient,
     private router: Router,
     private snack: Snacks,
-    private cookie: CookieService
+    private authGuard: AuthGuard
   ) {}
 
   login(username: string, password: string): Subscription {
@@ -41,10 +41,7 @@ export class AuthService {
   }
 
   checkSession(): boolean {
-    return (
-      this.cookie.check('_jwt') &&
-      this.cookie.check('_username')
-    );
+    return this.authGuard.checkSession();
   }
 
   logout(): void {

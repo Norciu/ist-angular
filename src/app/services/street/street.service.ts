@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, Subject } from 'rxjs';
+import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { catchError, debounceTime } from 'rxjs/operators';
+import { catchError } from 'rxjs/operators';
 import { AvailableCities } from 'src/app/components/street/street.component';
 import { StreetDatabase } from 'src/app/interfaces';
+import { ListRequest } from 'src/app/interfaces/any.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -42,11 +43,15 @@ export class StreetService {
     });
   }
 
-  getStreetsForCity(id: number | string): Promise<{ result: AvailableCities[], total: number }> {
-    return this.http.get<{ result: AvailableCities[], total: number }>(environment.apiUrl + `/street/streets/${id}`).toPromise();
+  getStreetsForCity(id: number | string): Promise<{ result: AvailableCities[], total: number, success: boolean }> {
+    return this.http.get<{ result: AvailableCities[], total: number, success: boolean }>(environment.apiUrl + `/street/streets/${id}`).toPromise();
   }
 
   searchCity(param: string): Promise<{ result: AvailableCities[], total }> {
     return this.http.get<{ result: AvailableCities[], total }>(environment.apiUrl + `/city/find/${param}`).toPromise();
+  }
+
+  findStreetsForCity(cityId: number, streetName: string): Promise<ListRequest<StreetDatabase>> {
+    return this.http.get<ListRequest<StreetDatabase>>(`${environment.apiUrl}/street/findStreet/${cityId}/${streetName}`).toPromise();
   }
 }

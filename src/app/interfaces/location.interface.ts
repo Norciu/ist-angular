@@ -1,7 +1,13 @@
 export interface Location {
   clientInfo?: LocationOwner;
-  address: LocationAddress;
-  technology: string;
+  city_id: number;
+  city_name: string;
+  street_id: number;
+  street_name: string;
+  flatNo: string;
+  homeNo: string;
+  plotNo: string;
+  technology_id: number;
 }
 
 export interface LocationAddress {

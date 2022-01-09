@@ -11,8 +11,6 @@ export interface StreetDatabase {
   readonly id: number;
   streetName: string;
   ulic: string;
-  city_id: CityStreetData;
   createdAt: string;
   updatedAt: string;
-  city: CityDatabase[];
 };

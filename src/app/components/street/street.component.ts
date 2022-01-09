@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
 import { StreetService } from '../../services/street/street.service';
 import { Observable, Subject, Subscription } from 'rxjs';
-import { debounceTime, distinctUntilChanged, map, startWith } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { Snacks } from '../../helpers/snacks';
 

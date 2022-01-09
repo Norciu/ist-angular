@@ -1,22 +1,29 @@
-<div fxLayoutAlign="center">
+<!-- <div fxLayoutAlign="center">
   <mat-form-field style="width: 60%">
     <mat-label>Wprowadź nazwę miejscowości oraz ulicę po przecinku, aby przefiltrować!</mat-label>
     <input type="text" matInput (keyup)="filterTable($event)" placeholder="Katowice, Mickiewicza"/>
   </mat-form-field>
-</div>
+</div> -->
 <div>
   <ngx-datatable
     #homeTable
     class="material expandable"
-    columnMode="force"
+    columnMode="ColumnMonde.force"
     [headerHeight]="50"
     [footerHeight]="50"
     [rowHeight]="50"
     [scrollbarV]="false"
-    [rows]="locations"
-    (page)="onPage($event)"
+    [rows]="rows"
     [loadingIndicator]="loadingIndicator"
-    limit="5"
+    [externalPaging]="true"
+    [count]="page.totalElements"
+    [offset]="page.pageNumber"
+    [limit]="page.size"
+    (page)="setPage($event)"
+    [messages]="{
+      emptyMessage: 'Nie znaleziono żadnych lokalizacji',
+      totalMessage: 'rekordy/ów'
+    }"
   >
     <!-- Row Detail Template -->
     <ngx-datatable-row-detail fxFlex="100" [rowHeight]="120" #rowDetailer>

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import {Observable} from 'rxjs';
+import { CityRequestAll, CityDatabaseInterface } from 'src/app/interfaces/city.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -10,18 +11,15 @@ export class CityService {
 
   constructor(private http: HttpClient) {}
 
-  send(cityName: string, postalCode: string , simc: string): Observable<any> {
-    return this.http.put(
-      environment.apiUrl + '/city/insert',
-      {
-        city_name: cityName,
-        postal_code: postalCode,
-        simc,
-      },
-    );
+  send(cityName: string, postalCode: string , simc: string): Observable<CityRequestAll & { inserted: CityDatabaseInterface }> {
+    return this.http.put<CityRequestAll & { inserted: CityDatabaseInterface }>(environment.apiUrl + '/city/insert', { cityName, postalCode, simc });
   }
 
-  getAll(): Observable<object> {
-    return this.http.get(environment.apiUrl + '/city/getAll');
+  getAll(limit = 10, offset = 0): Observable<CityRequestAll> {
+    return this.http.get<CityRequestAll>(environment.apiUrl + `/city/getAll?limit=${limit}&offset=${offset}`);
+  }
+
+  find(param: string): Observable<CityRequestAll> {
+    return this.http.get<CityRequestAll>(environment.apiUrl + `/city/find?param=${param}`);
   }
 }

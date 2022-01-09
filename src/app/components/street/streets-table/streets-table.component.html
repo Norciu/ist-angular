@@ -12,6 +12,7 @@
     [offset]="page.pageNumber"
     [limit]="page.size"
     (page)="setPage($event)"
+    [loadingIndicator]="loadingIndicator"
     [messages]="{
       emptyMessage: 'Nie znaleziono żadnych ulic',
       totalMessage: 'rekordów'

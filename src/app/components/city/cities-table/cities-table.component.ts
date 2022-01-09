@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { environment } from '../../../../environments/environment';
 import { CityDatabaseInterface } from '../../../interfaces';
+import { CityService } from '../city.service';
+import { ColumnMode } from '@swimlane/ngx-datatable';
 
 @Component({
   selector: 'app-cities-table',
@@ -9,19 +10,36 @@ import { CityDatabaseInterface } from '../../../interfaces';
   styleUrls: ['./cities-table.component.scss'],
 })
 export class CitiesTableComponent implements OnInit {
-  loadingIndicator: boolean;
+  loadingIndicator = true;
+  ColumnMode = ColumnMode;
 
   rows: CityDatabaseInterface[];
 
-  constructor(private http: HttpClient) {}
+  page: { pageNumber: number, totalElements: number, size: number } = {
+    pageNumber: 0,
+    totalElements: 0,
+    size: 10,
+  }
+
+  constructor(
+    private http: HttpClient,
+    private cityService: CityService,
+    ) {}
 
   ngOnInit(): void {
+    this.cityService.getAll().subscribe(({ result, total }) => {
+      this.loadingIndicator = false;
+      this.rows = result;
+      this.page.totalElements = total;
+    })
+  }
+
+  setPage(pageInfo) {
     this.loadingIndicator = true;
-    this.http
-      .get(environment.apiUrl + '/city/getAll')
-      .subscribe((val: CityDatabaseInterface[]) => {
-        this.rows = val;
-        this.loadingIndicator = false;
-      });
+    this.cityService.getAll(pageInfo.limit, pageInfo.offset * pageInfo.limit).subscribe(({ result, total }) => {
+      this.loadingIndicator = false;
+      this.rows = result;
+      this.page.totalElements = total;
+    })
   }
 }

@@ -7,11 +7,6 @@ import {
   Router,
 } from '@angular/router';
 import { Observable } from 'rxjs';
-import { AuthService } from '../../services/auth/auth.service';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { environment } from '../../../environments/environment';
-import { CookieService } from 'ngx-cookie-service';
-import { catchError } from 'rxjs/operators';
 import { Snacks } from '../../helpers/snacks';
 
 @Injectable({
@@ -22,9 +17,6 @@ export class AuthGuard implements CanActivate {
 
   constructor(
     private router: Router,
-    private authService: AuthService,
-    private http: HttpClient,
-    private cookies: CookieService,
     private snacks: Snacks
   ) {}
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean| UrlTree {
@@ -34,7 +26,17 @@ export class AuthGuard implements CanActivate {
   public checkSession(): boolean {
     const auth = localStorage.getItem('authorization');
     const username = localStorage.getItem('username');
-    return Boolean(auth && auth.length && username && username.length);
+    const isLogged = Boolean(auth && auth.length && username && username.length);
+
+    if (!isLogged) {
+      this.clearSession();
+      this.router.navigate(['/session/login']);
+      this.snacks.dangerInfo(
+        'Brak autoryzacji! Zaloguj się, aby kontynuować.'
+      );
+    }
+
+    return isLogged;
   }
 
   private clearSession(): void {

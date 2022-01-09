@@ -1,9 +1,11 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { HomeService } from '../../services/home/home.service';
 import { LocationApi } from '../../interfaces';
-import { DatatableComponent } from '@swimlane/ngx-datatable';
+import { ColumnMode } from '@swimlane/ngx-datatable';
 import { MatDialog } from '@angular/material/dialog';
 import { CommentsComponent } from './comments/comments.component';
+import { TablePagination } from 'src/app/interfaces/any.interface';
+import { recordTranslator } from 'src/app/helpers/record_translator';
 
 @Component({
   selector: 'app-home',
@@ -11,25 +13,22 @@ import { CommentsComponent } from './comments/comments.component';
   styleUrls: ['./home.component.scss'],
 })
 export class HomeComponent implements OnInit {
-  loadingIndicator: boolean;
-  locations: LocationApi[];
+  ColumnMode = ColumnMode;
+  loadingIndicator = true;
+  rows: LocationApi[];
   timeout: any;
   tempFilter = [];
 
+  recordTranslator = (total: number): string => recordTranslator(total);
+
+  page: TablePagination = { pageNumber: 0, totalElements: 0, size: 10 };
+
   @ViewChild('homeTable') table: any;
-  @ViewChild(DatatableComponent) table2: DatatableComponent;
 
   constructor(private homeService: HomeService, public dialog: MatDialog) {}
 
   ngOnInit(): void {
-    this.loadingIndicator = true;
-    this.homeService
-      .getAllAvailableLocations()
-      .subscribe((val: LocationApi[]) => {
-        this.tempFilter = [...val];
-        this.locations = val;
-        this.loadingIndicator = false;
-      });
+    this.getLocations(10, 0);
   }
 
   openDialog(locationId: string): void {
@@ -52,23 +51,44 @@ export class HomeComponent implements OnInit {
     }, 100);
   }
 
-  filterTable(event): void {
-    const val = event.target.value.toLowerCase();
-    const split = val.split(/,?\s|\s/, 2);
-    console.log(split);
-    this.locations = this.tempFilter.filter((value: LocationApi) => {
-      if (split.length === 2) {
-        return (
-          value.street.city.cityName.toLowerCase().indexOf(split[0]) !== -1 &&
-          value.street.streetName.toLowerCase().indexOf(split[1]) !== -1
-        );
-      } else if (split.length === 1) {
-        return (
-          value.street.city.cityName.toLowerCase().indexOf(val) !== -1 ||
-          value.street.streetName.toLowerCase().indexOf(val) !== -1
-        );
-      }
+  // filterTable(event): void {
+  //   const val = event.target.value.toLowerCase();
+  //   const split = val.split(/,?\s|\s/, 2);
+  //   console.log(split);
+  //   this.locations = this.tempFilter.filter((value: LocationApi) => {
+  //     if (split.length === 2) {
+  //       return (
+  //         value.street.city.cityName.toLowerCase().indexOf(split[0]) !== -1 &&
+  //         value.street.streetName.toLowerCase().indexOf(split[1]) !== -1
+  //       );
+  //     } else if (split.length === 1) {
+  //       return (
+  //         value.street.city.cityName.toLowerCase().indexOf(val) !== -1 ||
+  //         value.street.streetName.toLowerCase().indexOf(val) !== -1
+  //       );
+  //     }
+  //   });
+  //   this.table2.offset = 0;
+  // }
+
+  async setPage(pageInfo): Promise<void> {
+    this.loadingIndicator = true;
+    await this.homeService.getAllLocations(pageInfo.limit, pageInfo.offset * pageInfo.limit).then(({ result, total, success }) => {
+      this.loadingIndicator = false;
+      this.rows = result;
+      this.page.totalElements = total;
+    })
+  }
+
+  async getLocations(limit: number, offset: number) {
+    this.homeService.getAllLocations(limit, offset).then(({ result, total, success }) => {
+      this.loadingIndicator = false;
+      this.rows = result;
+      this.page.totalElements = total;
     });
-    this.table2.offset = 0;
+  }
+
+  async findStreetsForCity() {
+    return 
   }
 }

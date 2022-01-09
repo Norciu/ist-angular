@@ -6,12 +6,11 @@ import {
   HttpInterceptor,
 } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { CookieService } from 'ngx-cookie-service';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
 
-  constructor(private cookies: CookieService) {}
+  constructor() {}
 
   intercept(
     request: HttpRequest<unknown>,

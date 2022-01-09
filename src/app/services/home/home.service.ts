@@ -3,6 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { ListRequest } from 'src/app/interfaces/any.interface';
+import { LocationApi } from 'src/app/interfaces';
 
 export interface LocationsApiData {
   id: number;
@@ -27,5 +29,9 @@ export class HomeService {
         throw new Error(err);
       })
     );
+  }
+
+  getAllLocations(limit = 10, offset = 0) {
+    return this.http.get<ListRequest<LocationApi>>(`${environment.apiUrl}/locations/getAll?limit=${limit}&offset=${offset}`).toPromise();
   }
 }

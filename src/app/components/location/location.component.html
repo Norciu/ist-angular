@@ -104,6 +104,7 @@
           <input
             type="text"
             placeholder="Miejscowość"
+            (ngModelChange)="this.citySearchInput.next($event)"
             formControlName="city"
             matInput
             [matAutocomplete]="auto"
@@ -111,12 +112,13 @@
           />
           <mat-autocomplete #auto="matAutocomplete">
             <mat-option
-              *ngFor="let option of filteredCities | async"
-              [value]="option.cityName"
-              (onSelectionChange)="findStreetsForCity(option.simc); simc=option.simc"
+              *ngFor="let city of filteredCities"
+              [value]="city.cityName"
+              (onSelectionChange)="this.selectCity = city"
             >
-              <span>{{ option.cityName }}</span> |
-              <small>Kod SIMC: {{ option.simc }}</small>
+              <span>{{ city.cityName }}</span> |
+              <small>Kod pocztowy: {{ city.postalCode }}</small> |
+              <small>Kod SIMC: {{ city.simc }}</small>
             </mat-option>
           </mat-autocomplete>
         </mat-form-field>
@@ -126,18 +128,19 @@
             type="text"
             placeholder="Ulica"
             formControlName="street"
+            (ngModelChange)="this.streetSearchInput.next($event)"
             matInput
             [matAutocomplete]="auto2"
             required
           />
           <mat-autocomplete #auto2="matAutocomplete">
             <mat-option
-              *ngFor="let opt of filteredStreets | async"
-              [value]="opt.streetName"
-              (onSelectionChange)="ulic=opt.ulic"
+              *ngFor="let str of this.streets.result"
+              [value]="str.streetName"
+              (onSelectionChange)="this.selectedStreet = str"
             >
-              <span>{{ opt.streetName }}</span> |
-              <small>Kod ULIC: {{ opt.ulic }}</small>
+              <span>{{ str.streetName }}</span> |
+              <small>Kod ULIC: {{ str.ulic }}</small>
             </mat-option>
           </mat-autocomplete>
         </mat-form-field>
@@ -186,8 +189,9 @@
           />
           <mat-autocomplete #auto3="matAutocomplete">
             <mat-option
-              *ngFor="let option of filteredTechnologies | async"
+              *ngFor="let option of availableTechnology"
               [value]="option.technologyName"
+              (onSelectionChange)="this.selectedTechnology = option"
             >
               <span>{{ option.technologyName }}</span>
             </mat-option>

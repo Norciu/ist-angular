@@ -1,17 +1,18 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
-import { Observable } from 'rxjs';
+import { Observable, Subject, Subscription as Sub } from 'rxjs';
 import {
-  CityDatabaseInterface,
   Location,
   LocationAddress,
-  LocationOwner,
   TechnologyDatabaseInterface,
 } from '../../interfaces';
 import { StreetDatabase } from '../../interfaces';
-import { LocationService } from '../../services/location/location.service';
-import { map, startWith } from 'rxjs/operators';
+import { LocationService } from './location.service';
+import { debounceTime, distinctUntilChanged, map, startWith } from 'rxjs/operators';
 import { Snacks } from '../../helpers/snacks';
+import { StreetService } from 'src/app/services/street/street.service';
+import { AvailableCities } from '../street/street.component';
+import { TechnologyService } from '../technology/technology.service';
 
 @Component({
   selector: 'app-location',
@@ -19,13 +20,20 @@ import { Snacks } from '../../helpers/snacks';
   styleUrls: ['./location.component.scss'],
 })
 export class LocationComponent implements OnInit {
-  availableCities: CityDatabaseInterface[];
-  filteredCities: Observable<CityDatabaseInterface[]>;
-  filteredStreets: Observable<StreetDatabase[]>;
-  filteredTechnologies: Observable<TechnologyDatabaseInterface[]>;
+  filteredCities: AvailableCities[] = [];
+  totalCities: number;
+
+  streets: { result: StreetDatabase[], total: number } = { result: [], total: 0 };
+
+  selectedCity: AvailableCities;
+  selectedStreet: StreetDatabase;
+
+  citySearchInput = new Subject<string>();
+  streetSearchInput = new Subject<string>();
 
   availableStreets: StreetDatabase[];
   availableTechnology: TechnologyDatabaseInterface[];
+  selectedTechnology: TechnologyDatabaseInterface;
 
   currentSimc: string;
   currentUlic: string;
@@ -58,12 +66,19 @@ export class LocationComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private locationService: LocationService,
-    private snacks: Snacks
+    private snacks: Snacks,
+    private streetService: StreetService,
+    private technologyService: TechnologyService
   ) {}
 
   ngOnInit(): void {
-    this._getCities();
-    this._getTechnologies();
+    this.findCities();
+    this.findStreetsForCity();
+    this.getTechnologies()
+  }
+
+  set selectCity(city: AvailableCities) {
+    this.selectedCity = city;
   }
 
   set simc(simc: string) {
@@ -74,92 +89,57 @@ export class LocationComponent implements OnInit {
     this.currentUlic = ulic;
   }
 
-  private _getTechnologies(): void {
-    this.locationService
-      .getAvailableTechnologies()
-      .subscribe((val: TechnologyDatabaseInterface[]) => {
-        this.availableTechnology = val;
-        this.filteredTechnologies = this.technologyForm.valueChanges.pipe(
-          startWith(''),
-          map((value) => {
-            return this._filterTechnology(value);
-          })
-        );
-      });
+  async getTechnologies() {
+    const { result } = await this.technologyService.getTechnologies(0,0).toPromise();
+    this.availableTechnology = result;
   }
 
-  private _getCities(): void {
-    this.locationService
-      .getAvailableCities()
-      .subscribe((val: CityDatabaseInterface[]) => {
-        this.availableCities = val;
-        this.filteredCities = this.addressForm.get('city').valueChanges.pipe(
-          startWith(''),
-          map((value) => {
-            return this._cityFilter(value);
-          })
-        );
-      });
+  public findCities() {
+    return this.citySearchInput.pipe(debounceTime(500), distinctUntilChanged()).subscribe(async value => {
+      const { result, total } = await this.streetService.searchCity(value);
+      this.filteredCities = result;
+      this.totalCities = total;
+    });
   }
 
-  private _cityFilter(value: string): CityDatabaseInterface[] {
-    const filterValue = value.toLowerCase();
-    const res = this.availableCities.filter((val) =>
-      val.cityName.toLocaleLowerCase().includes(filterValue)
-    );
-    return res;
+  public findStreetsForCity() {
+    return this.streetSearchInput.pipe(debounceTime(500), distinctUntilChanged()).subscribe(async value => {
+      if (!this.selectedCity) {
+        return;
+      }
+      const { result, total } = await this.streetService.findStreetsForCity(this.selectedCity.id, value);
+      this.streets.total = total;
+      this.streets.result = result;
+    })
   }
 
-  public findStreetsForCity(simc: string): void {
-    this.locationService
-      .getStreetsForCity(simc)
-      .subscribe((val: StreetDatabase[]) => {
-        this.availableStreets = val;
-        this.filteredStreets = this.addressForm.get('street').valueChanges.pipe(
-          startWith(''),
-          map((value) => {
-            return this._filterStreets(value);
-          })
-        );
-      });
+  public async add(): Promise<void> {
+    const data = this.prepareDataToSend();
+    console.warn(data)
+    const { success } = await this.locationService.insertToDatabase(data);
+    if (success) {
+      return this.snacks.successInfo('Pomyślnie dodano do bazy!');
+    }
+
+    return this.snacks.dangerInfo('Wystąpił nieoczekiwany błąd!');
   }
 
-  private _filterStreets(value: string): StreetDatabase[] {
-    const filterValue = value.toLowerCase();
-    const res = this.availableStreets.filter((val) =>
-      val.streetName.toLocaleLowerCase().includes(filterValue)
-    );
-    return res;
-  }
-
-  private _filterTechnology(value: string): TechnologyDatabaseInterface[] {
-    const filterValue = value.toLowerCase();
-    const res = this.availableTechnology.filter((val) =>
-      val.technologyName.toLocaleLowerCase().includes(filterValue)
-    );
-    return res;
-  }
-
-  public add(): void {
-    const data: Location = this._prepareDataToSend();
-    this.locationService
-      .insertToDatabase(data)
-      .subscribe((val: { status: 'Added' }) => {
-        if (val.status === 'Added') {
-          this.snacks.successInfo('Pomyślnie dodano do bazy!');
-        }
-      });
-  }
-
-  private _prepareDataToSend(): Location {
-    const clientType = this.clientInfo.controls.clientType.value;
-    const address: LocationAddress = this.addressForm.value;
-    address.city = this.currentSimc;
-    address.street = this.currentUlic;
-    return {
-      clientInfo: clientType ? this.clientInfo.value : undefined,
-      address,
-      technology: this.technologyForm.controls.techForm.value,
+  private prepareDataToSend() {
+    const t: Location = {
+      city_id: this.selectedCity.id,
+      city_name: this.selectedCity.cityName,
+      street_id: this.selectedStreet.id,
+      street_name: this.selectedStreet.streetName,
+      flatNo: this.addressForm.get('flatNo').value,
+      homeNo: this.addressForm.get('homeNo').value,
+      plotNo: this.addressForm.get('plotNo').value,
+      technology_id: this.selectedTechnology.id,
     };
+
+    if (this.clientInfo.controls.clientType.value) {
+      t.clientInfo = this.clientInfo.value;
+    }
+
+    return t;
   }
 }

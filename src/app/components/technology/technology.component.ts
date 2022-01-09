@@ -1,10 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { TechnologyService } from '../../services/technology/technology.service';
+import { TechnologyService } from './technology.service';
 import { TechnologyDatabaseInterface } from '../../interfaces/technology.interface';
 import { Observable, Subscription } from 'rxjs';
 import { FormBuilder, Validators } from '@angular/forms';
 import { map } from 'rxjs/operators';
 import { Snacks } from '../../helpers/snacks';
+import { TechnologyTableComponent } from './technology-table/technology-table.component';
 
 @Component({
   selector: 'app-technology',
@@ -20,15 +21,10 @@ export class TechnologyComponent implements OnInit, OnDestroy {
   constructor(
     private technologyService: TechnologyService,
     private fb: FormBuilder,
-    private snack: Snacks
+    private snack: Snacks,
   ) {}
 
   ngOnInit(): void {
-    this.technologyService
-      .getTechnologies()
-      .subscribe(
-        (val: TechnologyDatabaseInterface[]) => (this.technologies = val)
-      );
     this.inputWatcher = this._techExistWatcher().subscribe();
   }
 
@@ -57,8 +53,7 @@ export class TechnologyComponent implements OnInit, OnDestroy {
   add(): void {
     const technologyName = this.techInput.value;
     if (!this.techExist) {
-      this.technologyService
-        .addTechnologyToDatabase(technologyName)
+      this.technologyService.addTechnologyToDatabase(technologyName)
         .subscribe((value: { status: 'Added' }) => {
           this.snack.successInfo('Pomyślnie dodano nową technologię!');
         });

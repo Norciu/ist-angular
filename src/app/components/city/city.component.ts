@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { CityService } from './city.service';
 import { catchError } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { Snacks } from '../../helpers/snacks';
+import { CitiesTableComponent } from './cities-table/cities-table.component';
 
 @Component({
   selector: 'app-city',
@@ -20,10 +21,11 @@ export class CityComponent implements OnInit {
     simc: this.fb.control('', [Validators.required]),
   });
 
+  @ViewChild(CitiesTableComponent) ctc: CitiesTableComponent;
+
   constructor(
     private fb: FormBuilder,
     private cityService: CityService,
-    private router: Router,
     private snacks: Snacks
   ) {}
 
@@ -42,10 +44,10 @@ export class CityComponent implements OnInit {
             throw new Error(err);
           })
         )
-        .subscribe((val) => {
-          if (val.status === 'Added') {
-            this.router.navigate(['/city/add-new']);
+        .subscribe(({ result, total, inserted, success }) => {
+          if (success) {
             this.snacks.successInfo('Miejscowość została pomyślnie dodana!');
+            this.ctc.page.totalElements = total;
           } else {
             this.snacks.dangerInfo('Taka miejscowość już istnieje!');
           }

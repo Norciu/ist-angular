@@ -8,6 +8,7 @@ import TileLayer from 'ol/layer/Tile';
 import VectorLayer from 'ol/layer/Vector';
 import OSM from 'ol/source/OSM';
 import { Vector } from 'ol/source';
+import { Icon, Style } from 'ol/style';
 
 @Component({
   selector: 'app-map',
@@ -17,12 +18,6 @@ import { Vector } from 'ol/source';
 export class MapComponent implements OnInit {
 
   constructor() { }
-
-  vectorSource = new Vector({ features: [new Feature({
-    geometry: new Point(fromLonLat([19.013769222322, 50.26362300659955])),
-    population: 4001,
-    rainfall: 501
-  })] });
 
   map: Map;
 
@@ -40,9 +35,17 @@ export class MapComponent implements OnInit {
           source: new Vector({
             features: [new Feature({
               geometry: new Point(fromLonLat([19.013769222322, 50.26362300659955])),
-              population: 4001,
-              
-            })]
+            })],
+          }),
+          style: new Style({
+            image: new Icon({
+              anchor: [0.5, 46],
+              anchorXUnits: 'fraction',
+              anchorYUnits: 'pixels',
+              src: 'assets/map-marker.png',
+              scale: 0.1,
+              color: [255, 255, 0, 0.5]
+            })
           }),
         })
       ],
