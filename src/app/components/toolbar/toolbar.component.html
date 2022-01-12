@@ -34,6 +34,24 @@
         Podłączeni użytkownicy
       </button>
     </mat-menu>
+    <button mat-button [mat-menu-trigger-for]="docs">Dokumentacja</button>
+    <mat-menu #docs>
+      <button mat-menu-item [routerLink]="['/statistic/connected']">
+        PDF
+      </button>
+      <button mat-menu-item [routerLink]="['/statistic/connected']">
+        DOCX
+      </button>
+    </mat-menu>
+    <button mat-button [mat-menu-trigger-for]="git">GitHub</button>
+    <mat-menu #git>
+      <button mat-menu-item (click)='this.forwardGithub("backend")'>
+        Backend
+      </button>
+      <button mat-menu-item (click)='this.forwardGithub("frontend")'>
+        Frontend
+      </button>
+    </mat-menu>
   </div>
   <div fxLayout="col" fxFlex="10" *ngIf="loggedIn" matTooltip="Zalogowany jako">
     <mat-icon>person</mat-icon>

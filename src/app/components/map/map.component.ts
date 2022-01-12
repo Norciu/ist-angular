@@ -9,6 +9,7 @@ import VectorLayer from 'ol/layer/Vector';
 import OSM from 'ol/source/OSM';
 import { Vector } from 'ol/source';
 import { Icon, Style } from 'ol/style';
+import { MapService } from './map.service';
 
 @Component({
   selector: 'app-map',
@@ -17,15 +18,15 @@ import { Icon, Style } from 'ol/style';
 })
 export class MapComponent implements OnInit {
 
-  constructor() { }
+  constructor(private mapService: MapService) { }
 
   map: Map;
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this.map = new Map({
       view: new View({
         center: fromLonLat([19.02754, 50.25841]),
-        zoom: 15,
+        zoom: 15
       }),
       layers: [
         new TileLayer({
@@ -33,9 +34,7 @@ export class MapComponent implements OnInit {
         }),
         new VectorLayer({
           source: new Vector({
-            features: [new Feature({
-              geometry: new Point(fromLonLat([19.013769222322, 50.26362300659955])),
-            })],
+            features: await this.getLocationsMarkers(),
           }),
           style: new Style({
             image: new Icon({
@@ -50,6 +49,16 @@ export class MapComponent implements OnInit {
         })
       ],
       target: 'ol-map'
+    });
+  }
+
+  async getLocationsMarkers() {
+    const { coordinates } = await this.mapService.getAllMarkers();
+    return coordinates.map(({coordinates: cords}) => {
+      const [longitude, latitude] = cords;
+      return new Feature({
+        geometry: new Point(fromLonLat([longitude, latitude])),
+      });
     });
   }
 

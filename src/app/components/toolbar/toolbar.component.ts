@@ -1,8 +1,9 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { NavigationEnd, Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth/auth.service';
 import { filter } from 'rxjs/operators';
+import { DOCUMENT } from '@angular/common';
 
 @Component({
   selector: 'app-toolbar',
@@ -17,7 +18,8 @@ export class ToolbarComponent implements OnInit, OnDestroy {
   route: Subscription;
   constructor(
     private router: Router,
-    private authService: AuthService
+    private authService: AuthService,
+    @Inject(DOCUMENT) private document: Document
   ) {}
 
   ngOnInit(): void {
@@ -51,6 +53,10 @@ export class ToolbarComponent implements OnInit, OnDestroy {
   changeToolbarForLoggedIn(): void {
     this.title = 'IST';
     this.loggedAs = localStorage.getItem('username');
+  }
+
+  forwardGithub(url: 'backend' | 'frontend') {
+    return window.open(`${url === 'backend' ? 'https://github.com/Norciu/ist-backend-nest' : 'https://github.com/Norciu/ist-angular'}`, '_blank');
   }
 
 }
