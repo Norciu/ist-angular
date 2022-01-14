@@ -36,10 +36,10 @@
     </mat-menu>
     <button mat-button [mat-menu-trigger-for]="docs">Dokumentacja</button>
     <mat-menu #docs>
-      <button mat-menu-item [routerLink]="['/statistic/connected']">
+      <button mat-menu-item (click)='this.getDocs("pdf")'>
         PDF
       </button>
-      <button mat-menu-item [routerLink]="['/statistic/connected']">
+      <button mat-menu-item (click)='this.getDocs("docx")'>
         DOCX
       </button>
     </mat-menu>

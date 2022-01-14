@@ -2,8 +2,10 @@ import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { NavigationEnd, Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth/auth.service';
-import { filter } from 'rxjs/operators';
+import { filter, map } from 'rxjs/operators';
 import { DOCUMENT } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-toolbar',
@@ -18,11 +20,12 @@ export class ToolbarComponent implements OnInit, OnDestroy {
   route: Subscription;
   constructor(
     private router: Router,
+    private http: HttpClient,
     private authService: AuthService,
     @Inject(DOCUMENT) private document: Document
   ) {}
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this.router.events
       .pipe(
         filter(
@@ -57,6 +60,13 @@ export class ToolbarComponent implements OnInit, OnDestroy {
 
   forwardGithub(url: 'backend' | 'frontend') {
     return window.open(`${url === 'backend' ? 'https://github.com/Norciu/ist-backend-nest' : 'https://github.com/Norciu/ist-angular'}`, '_blank');
+  }
+
+  async getDocs(type: 'pdf' | 'docx') {
+    const data = await this.http.get(`${environment.apiUrl}/docs/${type}`, { responseType: 'text' })
+      .pipe(map(res => new Blob([res], { type: 'application/pdf' }))).toPromise();
+    const url = URL.createObjectURL(data);
+    window.open(url, '_blank');
   }
 
 }
