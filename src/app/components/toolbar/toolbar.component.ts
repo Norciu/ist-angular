@@ -63,7 +63,7 @@ export class ToolbarComponent implements OnInit, OnDestroy {
   }
 
   async getDocs(type: 'pdf' | 'docx') {
-    const data = await this.http.get(`${environment.apiUrl}/docs/${type}`, { responseType: 'text' })
+    const data = await this.http.get(`${environment.apiUrl}/docs/${type}`, { responseType: 'arraybuffer' })
       .pipe(map(res => new Blob([res], { type: 'application/pdf' }))).toPromise();
     const url = URL.createObjectURL(data);
     window.open(url, '_blank');
