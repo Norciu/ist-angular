@@ -8,6 +8,7 @@ import { StreetComponent } from './components/street/street.component';
 import { TechnologyComponent } from './components/technology/technology.component';
 import { LocationComponent } from './components/location/location.component';
 import { MapComponent } from './components/map/map.component';
+import { StatisticComponent } from './components/statistic/statistic.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
@@ -18,6 +19,7 @@ const routes: Routes = [
   { path: 'technology/add-new', component: TechnologyComponent, canActivate: [AuthGuard] },
   { path: 'location/add-new', component: LocationComponent, canActivate: [AuthGuard] },
   { path: 'map/show-points', component: MapComponent, canActivate: [AuthGuard] },
+  { path: 'statistic', component: StatisticComponent, canActivate: [AuthGuard] },
 ];
 
 @NgModule({

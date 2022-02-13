@@ -1,6 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { LOCALE_ID, NgModule } from '@angular/core';
-
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -42,6 +41,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { CommentsComponent } from './components/home/comments/comments.component';
 import { MapComponent } from './components/map/map.component';
 import { NgChartsModule } from 'ng2-charts';
+import { StatisticComponent } from './components/statistic/statistic.component';
 
 registerLocaleData(localePl, 'pl');
 
@@ -61,6 +61,7 @@ registerLocaleData(localePl, 'pl');
     LocationComponent,
     CommentsComponent,
     MapComponent,
+    StatisticComponent,
   ],
   imports: [
     BrowserModule,

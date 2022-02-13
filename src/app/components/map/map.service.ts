@@ -12,4 +12,8 @@ export class MapService {
   getAllMarkers(): Promise<{ success: boolean, coordinates: { coordinates: [number, number] }[] }> {
     return this.http.get<{ success: boolean, coordinates: { coordinates: [number, number] }[] }>(`${environment.apiUrl}/locations/getAllMarkers`).toPromise();
   }
+
+  getLocationLonLat(location_id: number | string): Promise<{ success: boolean, result: [number, number] }> {
+    return this.http.get<{ success: boolean, result: [number, number] }>(`${environment.apiUrl}/locations/getLocationLonLat/${location_id}`).toPromise();
+  }
 }

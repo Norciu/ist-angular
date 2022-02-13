@@ -1,4 +1,4 @@
-<ng-container *ngIf="comments.length" mat-dialog-content>
+<ng-container *ngIf="total" mat-dialog-content>
   <p>Komentarze dla lokalizacji</p>
   <div *ngFor="let comment of comments">
     <mat-card style="background-color: gainsboro; margin-top: 10px">
@@ -16,7 +16,7 @@
     </mat-card>
   </div>
 </ng-container>
-<div *ngIf="!comments.length">
+<div *ngIf="!total">
   Brak komentarzy dla tego zgłoszenia.
 </div>
 <mat-form-field class="comment-description">

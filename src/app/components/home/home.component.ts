@@ -51,26 +51,6 @@ export class HomeComponent implements OnInit {
     }, 100);
   }
 
-  // filterTable(event): void {
-  //   const val = event.target.value.toLowerCase();
-  //   const split = val.split(/,?\s|\s/, 2);
-  //   console.log(split);
-  //   this.locations = this.tempFilter.filter((value: LocationApi) => {
-  //     if (split.length === 2) {
-  //       return (
-  //         value.street.city.cityName.toLowerCase().indexOf(split[0]) !== -1 &&
-  //         value.street.streetName.toLowerCase().indexOf(split[1]) !== -1
-  //       );
-  //     } else if (split.length === 1) {
-  //       return (
-  //         value.street.city.cityName.toLowerCase().indexOf(val) !== -1 ||
-  //         value.street.streetName.toLowerCase().indexOf(val) !== -1
-  //       );
-  //     }
-  //   });
-  //   this.table2.offset = 0;
-  // }
-
   async setPage(pageInfo): Promise<void> {
     this.loadingIndicator = true;
     await this.homeService.getAllLocations(pageInfo.limit, pageInfo.offset * pageInfo.limit).then(({ result, total, success }) => {
@@ -86,9 +66,5 @@ export class HomeComponent implements OnInit {
       this.rows = result;
       this.page.totalElements = total;
     });
-  }
-
-  async findStreetsForCity() {
-    return 
   }
 }

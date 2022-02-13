@@ -8,11 +8,10 @@
   <ngx-datatable
     #homeTable
     class="material expandable"
-    columnMode="ColumnMonde.force"
+    columnMode="force"
     [headerHeight]="50"
     [footerHeight]="50"
     [rowHeight]="50"
-    [scrollbarV]="false"
     [rows]="rows"
     [loadingIndicator]="loadingIndicator"
     [externalPaging]="true"
@@ -30,10 +29,10 @@
       <ng-template
         let-row="row"
         let-id="row.id"
-        let-owner="row.location_owner"
-        let-city="row.street.city"
-        let-street="row.street"
-        let-technology="row.availableTechnology.technologyName"
+        let-owner="row.location_owner_id"
+        let-city="row.city_id"
+        let-street="row.street_id"
+        let-technology="row.available_technology_id"
         ngx-datatable-row-detail-template
       >
         <div fxFlex="20">
@@ -78,10 +77,18 @@
         </div>
         <div fxFlex="20">
           <div><strong>Najlepsza dostępna technologia:</strong></div>
-          <div>Specyfikacja: <strong>{{technology}}</strong></div>
+          <div>Specyfikacja:
+            <strong *ngIf="!technology" style="color: red;">Podłączenie niemożliwe</strong>
+            <strong *ngIf="technology && technology.technologyName">{{technology.technologyName}}</strong>
+          </div>
         </div>
-        <div>
-          <button mat-button color="primary" mat-raised-button (click)="openDialog(id)">Komentarze</button>
+        <div fxFlex="10">
+          <div>
+            <button mat-button color="primary" mat-raised-button (click)="openDialog(id)">Komentarze</button>
+          </div>
+          <div style="margin-top: 10px;">
+            <button mat-button color="primary" mat-raised-button [routerLink]="['/map/show-points']" [queryParams]="{ location_id: id }" >Pokaż na mapie</button>
+          </div>
         </div>
       </ng-template>
     </ngx-datatable-row-detail>
@@ -108,41 +115,39 @@
         </a>
       </ng-template>
     </ngx-datatable-column>
-    <ngx-datatable-column name="#" [width]="80">
-      <ng-template
-        let-rowIndex="rowIndex"
-        let-row="row"
-        ngx-datatable-cell-template
-      >
-        <strong>{{ rowIndex + 1 }}</strong>
+    <ngx-datatable-column name="#" [width]="80" prop="id">
+      <ng-template let-id="value" ngx-datatable-cell-template>
+        <strong>{{ id }}</strong>
       </ng-template>
     </ngx-datatable-column>
-    <ngx-datatable-column name="Miejscowość" prop="street.city.cityName">
+    <ngx-datatable-column name="Miejscowość" prop="city_id.cityName">
       <ng-template let-value="value" ngx-datatable-cell-template>
         <strong>{{ value }}</strong>
       </ng-template>
     </ngx-datatable-column>
-    <ngx-datatable-column name="Ulica" prop="street.streetName">
+    <ngx-datatable-column name="Ulica" prop="street_id.streetName">
       <ng-template let-value="value" ngx-datatable-cell-template>
         {{ value }}
       </ng-template>
     </ngx-datatable-column>
-    <ngx-datatable-column name="Numer budynku" prop="flatNo">
-      <ng-template let-value="value" ngx-datatable-cell-template>
-        {{ value }}
-      </ng-template>
-    </ngx-datatable-column>
-    <ngx-datatable-column name="Numer porządkowy" prop="homeNo">
+    <ngx-datatable-column name="Numer budynku" prop="homeNo">
       <ng-template let-value="value" ngx-datatable-cell-template>
         <strong>{{ value }}</strong>
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="Numer porządkowy" prop="flatNo">
+      <ng-template let-value="value" ngx-datatable-cell-template>
+        <strong *ngIf="value">{{ value }}</strong>
+        <strong *ngIf="!value">--</strong>
       </ng-template>
     </ngx-datatable-column>
     <ngx-datatable-column
       name="Technologia"
-      prop="availableTechnology.technologyName"
+      prop="available_technology_id.technologyName"
     >
       <ng-template let-value="value" ngx-datatable-cell-template>
-        <strong>{{ value }}</strong>
+        <strong *ngIf="!value" style="color: red;">Podłączenie niemożliwe</strong>
+        <strong *ngIf="value">{{ value }}</strong>
       </ng-template>
     </ngx-datatable-column>
   </ngx-datatable>
