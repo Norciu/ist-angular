@@ -28,12 +28,7 @@
         Wyświetl punkty
       </button>
     </mat-menu>
-    <button mat-button [mat-menu-trigger-for]="statistic">Statystyka</button>
-    <mat-menu #statistic>
-      <button mat-menu-item [routerLink]="['/statistic']">
-        Podłączeni użytkownicy
-      </button>
-    </mat-menu>
+    <button mat-button [mat-menu-trigger-for]="statistic" [routerLink]="['/statistic']" routerLinkActive="router-link-active" >Statystyka</button>
     <button mat-button [mat-menu-trigger-for]="docs">Dokumentacja</button>
     <mat-menu #docs>
       <button mat-menu-item (click)='this.getDocs("pdf")'>

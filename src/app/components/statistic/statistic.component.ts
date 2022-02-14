@@ -69,16 +69,19 @@ export class StatisticComponent implements OnInit {
 
     this.barChartData = {
       labels: this.barChartLabels,
-      // datasets: [
-      //   { data: Object.values(barChart), label: "test"},
-      // ]
-      // datasets: Object.entries(barChart).map(([ label, value ], index) => ({ data: [ value ], label: this.barChartLabels[index] })),
-      datasets: [ { data:Object.values(barChart), label: this.barChartLabels[1] }],
+      datasets: this.datasets(barChart),
     }
   }
 
   async getPieChartData(): Promise<{ success: boolean, result: unknown }> {
     return this.statisticService.getPieChartData();
+  }
+
+  private datasets(data: number[]): { data: number[], label: string }[] {
+    const t = Object.values(data);
+    const empty = t.map(() => 0);
+
+    return t.map((value, index) => ({ data: t.map((o, i) => i === index ? o : empty[i]), label: this.barChartLabels[index] }));
   }
 
 }

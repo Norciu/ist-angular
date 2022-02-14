@@ -13,8 +13,8 @@ export class StatisticService {
     return this.http.get<{ success: boolean, result: unknown }>(`${environment.apiUrl}/statistic/pieChart`).toPromise();
   }
 
-  async getBarChartData(): Promise<{ success: boolean, result: unknown }> {
-    return this.http.get<{ success: boolean, result: unknown }>(`${environment.apiUrl}/statistic/barChart`).toPromise();
+  async getBarChartData(): Promise<{ success: boolean, result: number[] }> {
+    return this.http.get<{ success: boolean, result: number[] }>(`${environment.apiUrl}/statistic/barChart`).toPromise();
   }
 
 

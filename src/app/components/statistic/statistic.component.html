@@ -1,17 +1,15 @@
 <div>
-  <div style="width: 800px; height: auto;">
-    <div class="chart">
-      <canvas baseChart
-              [height]="300"
-              [width]="300"
-              [data]="pieChartData"
-              [type]="pieChartType"
-              [options]="pieChartOptions"
-              [plugins]="pieChartPlugins">
-      </canvas>
-    </div>
-    <mat-divider [vertical]="true"></mat-divider>
-    <canvas baseChart [data]="barChartData" [options]="barChartOptions" [type]="barChartType">
-  </canvas>
+  <div style="width: 35%; display: inline-block;">
+    <canvas baseChart
+            [height]="300"
+            [width]="300"
+            [data]="pieChartData"
+            [type]="pieChartType"
+            [options]="pieChartOptions"
+            [plugins]="pieChartPlugins">
+    </canvas>
+  </div>
+  <div style="width: 65%; display: inline-block;">
+    <canvas baseChart [data]="barChartData" [options]="barChartOptions" [type]="barChartType"></canvas>
   </div>
 </div>
