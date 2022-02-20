@@ -29,11 +29,12 @@ export class StatisticComponent implements OnInit {
           }
         },
       },
-    }
+    },
   };
   public pieChartData: ChartData<'pie', number[], string | string[]>;
   public pieChartType: ChartType = 'pie';
   public pieChartPlugins = [ DatalabelsPlugin ];
+  public pieChartColors = [{ backgroundColor: ['green'] }];
 
   public barChartOptions: ChartConfiguration['options'] = {
     elements: {
@@ -58,30 +59,23 @@ export class StatisticComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     const { result } = await this.getPieChartData();
-    const { result: barChart } = await this.statisticService.getBarChartData();
+    const { result: { available, connected } } = await this.statisticService.getBarChartData();
 
     this.pieChartData = {
       labels: [ 'Podłączeni', 'Możliwe podłączenie', 'Podłączenie niemożliwe' ],
       datasets: [{ data: Object.values(result) }]
-    }
-
-    console.log(Object.entries(barChart).map(([ label, value ], index) => ({ data: [ value ], label: this.barChartLabels[index] })))
+    };
 
     this.barChartData = {
       labels: this.barChartLabels,
-      datasets: this.datasets(barChart),
-    }
+      datasets: [
+        { data: connected, label: 'Podłączeni' },
+        { data: available, label: 'Możliwe podłączenie' },
+      ],
+    };
   }
 
   async getPieChartData(): Promise<{ success: boolean, result: unknown }> {
     return this.statisticService.getPieChartData();
   }
-
-  private datasets(data: number[]): { data: number[], label: string }[] {
-    const t = Object.values(data);
-    const empty = t.map(() => 0);
-
-    return t.map((value, index) => ({ data: t.map((o, i) => i === index ? o : empty[i]), label: this.barChartLabels[index] }));
-  }
-
 }

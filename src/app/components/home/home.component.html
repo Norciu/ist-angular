@@ -1,9 +1,3 @@
-<!-- <div fxLayoutAlign="center">
-  <mat-form-field style="width: 60%">
-    <mat-label>Wprowadź nazwę miejscowości oraz ulicę po przecinku, aby przefiltrować!</mat-label>
-    <input type="text" matInput (keyup)="filterTable($event)" placeholder="Katowice, Mickiewicza"/>
-  </mat-form-field>
-</div> -->
 <div>
   <ngx-datatable
     #homeTable
@@ -79,7 +73,8 @@
           <div><strong>Najlepsza dostępna technologia:</strong></div>
           <div>Specyfikacja:
             <strong *ngIf="!technology" style="color: red;">Podłączenie niemożliwe</strong>
-            <strong *ngIf="technology && technology.technologyName">{{technology.technologyName}}</strong>
+            <strong *ngIf="technology && technology.technologyName && row.available_type == 1" style="color: orange">{{technology.technologyName}}</strong>
+            <strong *ngIf="technology && technology.technologyName && row.available_type == 2" style="color: yellowgreen">{{technology.technologyName}}</strong>
           </div>
         </div>
         <div fxFlex="10">
@@ -145,9 +140,10 @@
       name="Technologia"
       prop="available_technology_id.technologyName"
     >
-      <ng-template let-value="value" ngx-datatable-cell-template>
+      <ng-template let-value="value" let-row="row" ngx-datatable-cell-template>
         <strong *ngIf="!value" style="color: red;">Podłączenie niemożliwe</strong>
-        <strong *ngIf="value">{{ value }}</strong>
+        <strong *ngIf="value && row.available_type == 1" style="color: orange">{{ value }}</strong>
+        <strong *ngIf="value && row.available_type == 2" style="color: yellowgreen">{{ value }}</strong>
       </ng-template>
     </ngx-datatable-column>
   </ngx-datatable>

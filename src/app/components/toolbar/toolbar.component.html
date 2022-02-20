@@ -22,22 +22,9 @@
         Dodaj nową
       </button>
     </mat-menu>
-    <button mat-button [mat-menu-trigger-for]="maps">Mapa</button>
-    <mat-menu #maps>
-      <button mat-menu-item [routerLink]="['/map/show-points']">
-        Wyświetl punkty
-      </button>
-    </mat-menu>
-    <button mat-button [mat-menu-trigger-for]="statistic" [routerLink]="['/statistic']" routerLinkActive="router-link-active" >Statystyka</button>
-    <button mat-button [mat-menu-trigger-for]="docs">Dokumentacja</button>
-    <mat-menu #docs>
-      <button mat-menu-item (click)='this.getDocs("pdf")'>
-        PDF
-      </button>
-      <button mat-menu-item (click)='this.getDocs("docx")'>
-        DOCX
-      </button>
-    </mat-menu>
+    <button mat-button [routerLink]="['/map/show-points']">Mapa</button>
+    <button mat-button [routerLink]="['/statistic']" routerLinkActive="router-link-active" >Statystyka</button>
+    <a mat-button href="https://1drv.ms/w/s!AlkgA7J997qLgrVRrn6vduMitsf6JA?e=4oCvFy" target="_blank">Dokumentacja</a>
     <button mat-button [mat-menu-trigger-for]="git">GitHub</button>
     <mat-menu #git>
       <button mat-menu-item (click)='this.forwardGithub("backend")'>
